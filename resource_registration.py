@@ -71,6 +71,11 @@ def build_default_registry() -> CapabilityRegistry:
             availability=Availability(status="up", rate_limit_rpm=30),
             # Pulls unvetted third-party web content into the workflow.
             risk_class="medium",
+            metadata={
+                "provider": "groq",
+                "model": "llama-3.3-70b-versatile",
+                "pipeline": "ddgs_search+groq",
+            },
         ),
         # Full LLM pass. The only resource providing reasoning.deep, so every
         # compare/analyse node lands here regardless of the cost term.
@@ -97,6 +102,10 @@ def build_default_registry() -> CapabilityRegistry:
             },
             availability=Availability(status="up", rate_limit_rpm=60),
             risk_class="low",
+            metadata={
+                "provider": "groq",
+                "model": "llama-3.3-70b-versatile",
+            },
         ),
         # Local Ollama vision model: free per call, but slow, hence the wide p95.
         CapabilityManifest(
@@ -118,6 +127,10 @@ def build_default_registry() -> CapabilityRegistry:
             },
             availability=Availability(status="up", rate_limit_rpm=120),
             risk_class="low",
+            metadata={
+                "provider": "ollama",
+                "model": "medgemma1.5:latest",
+            },
         ),
         # Final-answer writer. Shares the model with `summarization` but not the
         # instruction: it expands rather than compresses, so its priors on
@@ -149,6 +162,10 @@ def build_default_registry() -> CapabilityRegistry:
             },
             availability=Availability(status="up", rate_limit_rpm=60),
             risk_class="low",
+            metadata={
+                "provider": "groq",
+                "model": "llama-3.3-70b-versatile",
+            },
         ),
         # Cheap extractive pass over the same model with a terser instruction.
         CapabilityManifest(
@@ -170,6 +187,10 @@ def build_default_registry() -> CapabilityRegistry:
             },
             availability=Availability(status="up", rate_limit_rpm=60),
             risk_class="low",
+            metadata={
+                "provider": "groq",
+                "model": "llama-3.3-70b-versatile",
+            },
         ),
     ]
 
@@ -197,4 +218,21 @@ def build_default_registry() -> CapabilityRegistry:
         f"{len(registry.provided_flags())} distinct capability flags: "
         f"{registry.provided_flags()}\n"
     )
+    return registry
+
+
+def build_hf_enabled_registry(
+    provider: str | None = None,
+) -> CapabilityRegistry:
+    """Default pool plus the Hugging Face catalog resources.
+
+    Opt-in on purpose: `build_default_registry()` stays the DOC2 baseline
+    control group, so routing experiments can compare pools without touching
+    the frozen default. The HF adapter is imported lazily so the core never
+    depends on Hugging Face SDKs.
+    """
+    registry = build_default_registry()
+    from providers.hf import register_hf_resources
+
+    register_hf_resources(registry, provider=provider)
     return registry

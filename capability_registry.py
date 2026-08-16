@@ -21,7 +21,24 @@ from models import CAPABILITY_FLAGS, CapabilityDNA, risk_rank
 
 
 ResourceClass = Literal[
-    "llm", "vlm", "asr", "tts", "tool", "api", "database", "sensor", "robot"
+    "llm",
+    "vlm",
+    "asr",
+    "tts",
+    "tool",
+    "api",
+    "database",
+    "sensor",
+    "robot",
+    "embedder",
+    "reranker",
+    # Multimodal classes added with the multimodal-catalog expansion. `audio`
+    # covers audio-understanding / audio-classification models that are not
+    # speech-to-text (ASR); `image` covers pure vision models that are not
+    # vision-language (VLM). Like embedder/reranker, these are informational
+    # class tags -- scheduling still routes on capability flags only.
+    "audio",
+    "image",
 ]
 
 
@@ -94,6 +111,11 @@ class CapabilityManifest(BaseModel):
     quality_priors: Dict[str, float] = Field(default_factory=dict)
     availability: Availability = Field(default_factory=Availability)
     risk_class: Literal["low", "medium", "high"] = "low"
+    # Provider-specific audit metadata (e.g. {"provider": "huggingface",
+    # "model": "..."}). Deliberately free-form and optional: scheduling routes
+    # on `capabilities` only, so the core stays provider-agnostic and this is
+    # trace/plan data, never decision logic.
+    metadata: Dict[str, str] = Field(default_factory=dict)
 
     @field_validator("capabilities")
     @classmethod

@@ -1,0 +1,2168 @@
+{
+  "generated_utc": "2026-08-16T16:28:49.321365+00:00",
+  "pools": {
+    "default": {
+      "distinct_capability_flags": [
+        "answer.synthesis",
+        "planning.decomposition",
+        "reasoning.deep",
+        "reasoning.shallow",
+        "text.classification",
+        "text.summarization",
+        "tool.calling",
+        "vision.understanding",
+        "web.search"
+      ],
+      "name": "default-doc2-pool",
+      "resource_count": 5,
+      "resources": [
+        {
+          "availability": {
+            "rate_limit_rpm": 30,
+            "status": "up"
+          },
+          "capabilities": [
+            "web.search",
+            "tool.calling",
+            "reasoning.shallow"
+          ],
+          "cost_model": {
+            "estimate_usd": 0.004,
+            "unit": "per_call"
+          },
+          "input_schema": {
+            "format": "query",
+            "type": "text"
+          },
+          "latency_model": {
+            "p50_ms": 3000,
+            "p95_ms": 9000
+          },
+          "metadata": {
+            "model": "llama-3.3-70b-versatile",
+            "pipeline": "ddgs_search+groq",
+            "provider": "groq"
+          },
+          "output_schema": {
+            "format": "plain",
+            "type": "text"
+          },
+          "quality_priors": {
+            "reasoning.shallow": 0.6,
+            "tool.calling": 0.8,
+            "web.search": 0.85
+          },
+          "resource_class": "tool",
+          "resource_id": "web_search",
+          "risk_class": "medium"
+        },
+        {
+          "availability": {
+            "rate_limit_rpm": 60,
+            "status": "up"
+          },
+          "capabilities": [
+            "text.summarization",
+            "reasoning.deep",
+            "reasoning.shallow",
+            "planning.decomposition",
+            "text.classification"
+          ],
+          "cost_model": {
+            "estimate_usd": 0.003,
+            "unit": "per_call"
+          },
+          "input_schema": {
+            "format": "plain",
+            "type": "text"
+          },
+          "latency_model": {
+            "p50_ms": 1500,
+            "p95_ms": 5000
+          },
+          "metadata": {
+            "model": "llama-3.3-70b-versatile",
+            "provider": "groq"
+          },
+          "output_schema": {
+            "format": "plain",
+            "type": "text"
+          },
+          "quality_priors": {
+            "planning.decomposition": 0.6,
+            "reasoning.deep": 0.8,
+            "reasoning.shallow": 0.75,
+            "text.classification": 0.55,
+            "text.summarization": 0.85
+          },
+          "resource_class": "llm",
+          "resource_id": "summarization",
+          "risk_class": "low"
+        },
+        {
+          "availability": {
+            "rate_limit_rpm": 120,
+            "status": "up"
+          },
+          "capabilities": [
+            "vision.understanding",
+            "reasoning.shallow",
+            "text.classification"
+          ],
+          "cost_model": {
+            "estimate_usd": 0.0,
+            "unit": "per_call"
+          },
+          "input_schema": {
+            "format": "path",
+            "type": "image"
+          },
+          "latency_model": {
+            "p50_ms": 6000,
+            "p95_ms": 15000
+          },
+          "metadata": {
+            "model": "medgemma1.5:latest",
+            "provider": "ollama"
+          },
+          "output_schema": {
+            "format": "plain",
+            "type": "text"
+          },
+          "quality_priors": {
+            "reasoning.shallow": 0.6,
+            "text.classification": 0.55,
+            "vision.understanding": 0.88
+          },
+          "resource_class": "vlm",
+          "resource_id": "vision",
+          "risk_class": "low"
+        },
+        {
+          "availability": {
+            "rate_limit_rpm": 60,
+            "status": "up"
+          },
+          "capabilities": [
+            "answer.synthesis",
+            "reasoning.deep",
+            "text.summarization",
+            "planning.decomposition",
+            "reasoning.shallow"
+          ],
+          "cost_model": {
+            "estimate_usd": 0.006,
+            "unit": "per_call"
+          },
+          "input_schema": {
+            "format": "plain",
+            "type": "text"
+          },
+          "latency_model": {
+            "p50_ms": 3500,
+            "p95_ms": 9000
+          },
+          "metadata": {
+            "model": "llama-3.3-70b-versatile",
+            "provider": "groq"
+          },
+          "output_schema": {
+            "format": "markdown",
+            "type": "text"
+          },
+          "quality_priors": {
+            "answer.synthesis": 0.92,
+            "planning.decomposition": 0.75,
+            "reasoning.deep": 0.9,
+            "reasoning.shallow": 0.7,
+            "text.summarization": 0.7
+          },
+          "resource_class": "llm",
+          "resource_id": "synthesis",
+          "risk_class": "low"
+        },
+        {
+          "availability": {
+            "rate_limit_rpm": 60,
+            "status": "up"
+          },
+          "capabilities": [
+            "text.summarization",
+            "text.classification",
+            "reasoning.shallow"
+          ],
+          "cost_model": {
+            "estimate_usd": 0.001,
+            "unit": "per_call"
+          },
+          "input_schema": {
+            "format": "plain",
+            "type": "text"
+          },
+          "latency_model": {
+            "p50_ms": 700,
+            "p95_ms": 2200
+          },
+          "metadata": {
+            "model": "llama-3.3-70b-versatile",
+            "provider": "groq"
+          },
+          "output_schema": {
+            "format": "plain",
+            "type": "text"
+          },
+          "quality_priors": {
+            "reasoning.shallow": 0.7,
+            "text.classification": 0.8,
+            "text.summarization": 0.65
+          },
+          "resource_class": "llm",
+          "resource_id": "quick_summarization",
+          "risk_class": "low"
+        }
+      ]
+    },
+    "hf": {
+      "distinct_capability_flags": [
+        "answer.synthesis",
+        "audio_analysis",
+        "audio_classification",
+        "audio_event_recognition",
+        "audio_input",
+        "audio_to_text",
+        "audio_understanding",
+        "automatic_speech_recognition",
+        "code.generation",
+        "embedding.generation",
+        "image_classification",
+        "image_representation",
+        "image_similarity",
+        "image_text_matching",
+        "image_text_retrieval",
+        "image_understanding",
+        "instruction_following",
+        "multi_object_detection",
+        "multilingual_speech",
+        "object_detection",
+        "object_identification",
+        "object_localization",
+        "planning.decomposition",
+        "reasoning.deep",
+        "reasoning.shallow",
+        "rerank.scoring",
+        "sound_classification",
+        "speech.transcription",
+        "speech_recognition",
+        "speech_to_text",
+        "speech_understanding",
+        "text.classification",
+        "text.summarization",
+        "tool.calling",
+        "transcription",
+        "vision.understanding",
+        "vision_input",
+        "vision_language",
+        "visual_embedding",
+        "visual_feature_extraction",
+        "visual_question_answering",
+        "visual_reasoning",
+        "zero_shot_classification"
+      ],
+      "name": "hf-inference-providers-catalog",
+      "resource_count": 17,
+      "resources": [
+        {
+          "availability": {
+            "rate_limit_rpm": 60,
+            "status": "up"
+          },
+          "capabilities": [
+            "reasoning.deep",
+            "reasoning.shallow",
+            "tool.calling",
+            "text.summarization",
+            "text.classification",
+            "answer.synthesis",
+            "planning.decomposition"
+          ],
+          "cost_model": {
+            "estimate_usd": 0.0,
+            "unit": "per_1k_tokens"
+          },
+          "input_schema": {
+            "format": "plain",
+            "type": "text"
+          },
+          "latency_model": {
+            "p50_ms": 1000,
+            "p95_ms": 4000
+          },
+          "metadata": {
+            "capability_provenance": "{\"answer.synthesis\": \"inferred\", \"planning.decomposition\": \"inferred\", \"reasoning.deep\": \"documented\", \"reasoning.shallow\": \"documented\", \"text.classification\": \"inferred\", \"text.summarization\": \"inferred\", \"tool.calling\": \"documented\"}",
+            "context_length": "40,960 (router/sibling); card gated",
+            "declared": "capabilities declared from model documentation; cost/latency/quality unmeasured (architecture defaults)",
+            "hf_provider": "auto",
+            "interface": "chat_completion",
+            "modality": "text",
+            "model": "Qwen/Qwen3-30B-A3B-Instruct",
+            "params": "~30B total / ~3.3B active (MoE, A3B); exact figures unverified (card gated)",
+            "price": "sibling Qwen/Qwen3-30B-A3B served by deepinfra at $0.12/$0.50 per 1M tokens (router, 2026-08-16); exact-id price unverified",
+            "provider": "huggingface",
+            "source": "https://huggingface.co/Qwen/Qwen3-30B-A3B-Instruct",
+            "task": "text-generation",
+            "transport": "wired"
+          },
+          "output_schema": {
+            "format": "plain",
+            "type": "text"
+          },
+          "quality_priors": {},
+          "resource_class": "llm",
+          "resource_id": "hf_qwen3_30b_a3b_instruct",
+          "risk_class": "low"
+        },
+        {
+          "availability": {
+            "rate_limit_rpm": 60,
+            "status": "up"
+          },
+          "capabilities": [
+            "reasoning.shallow",
+            "tool.calling",
+            "text.summarization",
+            "text.classification"
+          ],
+          "cost_model": {
+            "estimate_usd": 0.0,
+            "unit": "per_1k_tokens"
+          },
+          "input_schema": {
+            "format": "plain",
+            "type": "text"
+          },
+          "latency_model": {
+            "p50_ms": 1000,
+            "p95_ms": 4000
+          },
+          "metadata": {
+            "capability_provenance": "{\"reasoning.shallow\": \"documented\", \"text.classification\": \"inferred\", \"text.summarization\": \"inferred\", \"tool.calling\": \"documented\"}",
+            "context_length": "32,768 native / 131,072 via YaRN (router: 40,960)",
+            "declared": "capabilities declared from model documentation; cost/latency/quality unmeasured (architecture defaults)",
+            "hf_provider": "auto",
+            "interface": "chat_completion",
+            "modality": "text",
+            "model": "Qwen/Qwen3-8B",
+            "params": "8.2B total / 6.95B non-embedding (dense)",
+            "price": "nscale $0.07/$0.18 per 1M tokens (router, 2026-08-16)",
+            "provider": "huggingface",
+            "source": "https://huggingface.co/Qwen/Qwen3-8B",
+            "task": "text-generation",
+            "transport": "wired"
+          },
+          "output_schema": {
+            "format": "plain",
+            "type": "text"
+          },
+          "quality_priors": {},
+          "resource_class": "llm",
+          "resource_id": "hf_qwen3_8b",
+          "risk_class": "low"
+        },
+        {
+          "availability": {
+            "rate_limit_rpm": 60,
+            "status": "up"
+          },
+          "capabilities": [
+            "vision.understanding",
+            "vision_input",
+            "image_understanding",
+            "visual_question_answering",
+            "visual_reasoning",
+            "vision_language",
+            "instruction_following",
+            "tool.calling",
+            "reasoning.shallow",
+            "text.classification"
+          ],
+          "cost_model": {
+            "estimate_usd": 0.0,
+            "unit": "per_1k_tokens"
+          },
+          "input_schema": {
+            "format": "plain",
+            "type": "image"
+          },
+          "latency_model": {
+            "p50_ms": 1000,
+            "p95_ms": 4000
+          },
+          "metadata": {
+            "capability_provenance": "{\"image_understanding\": \"documented\", \"instruction_following\": \"inferred\", \"reasoning.shallow\": \"documented\", \"text.classification\": \"inferred\", \"tool.calling\": \"documented\", \"vision.understanding\": \"documented\", \"vision_input\": \"documented\", \"vision_language\": \"documented\", \"visual_question_answering\": \"documented\", \"visual_reasoning\": \"documented\"}",
+            "context_length": "32,768 (64K suggested for long video)",
+            "declared": "capabilities declared from model documentation; cost/latency/quality unmeasured (architecture defaults)",
+            "hf_provider": "auto",
+            "interface": "chat_completion",
+            "modality": "text + image + video",
+            "model": "Qwen/Qwen2.5-VL-7B-Instruct",
+            "params": "7B (dense)",
+            "price": "not published (featherless-ai, live; billed per compute)",
+            "provider": "huggingface",
+            "source": "https://huggingface.co/Qwen/Qwen2.5-VL-7B-Instruct",
+            "task": "visual-question-answering",
+            "transport": "wired"
+          },
+          "output_schema": {
+            "format": "plain",
+            "type": "text"
+          },
+          "quality_priors": {},
+          "resource_class": "vlm",
+          "resource_id": "hf_qwen2_5_vl_7b_instruct",
+          "risk_class": "low"
+        },
+        {
+          "availability": {
+            "rate_limit_rpm": 60,
+            "status": "up"
+          },
+          "capabilities": [
+            "code.generation",
+            "tool.calling",
+            "reasoning.deep",
+            "reasoning.shallow"
+          ],
+          "cost_model": {
+            "estimate_usd": 0.0,
+            "unit": "per_1k_tokens"
+          },
+          "input_schema": {
+            "format": "plain",
+            "type": "text"
+          },
+          "latency_model": {
+            "p50_ms": 1000,
+            "p95_ms": 4000
+          },
+          "metadata": {
+            "capability_provenance": "{\"code.generation\": \"documented\", \"reasoning.deep\": \"documented\", \"reasoning.shallow\": \"documented\", \"tool.calling\": \"documented\"}",
+            "context_length": "262,144 native / 1M via YaRN",
+            "declared": "capabilities declared from model documentation; cost/latency/quality unmeasured (architecture defaults)",
+            "hf_provider": "auto",
+            "interface": "chat_completion",
+            "modality": "text",
+            "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+            "params": "30.5B total / 3.3B active (MoE, 128 experts / 8 active)",
+            "price": "scaleway $0.228/$0.912 per 1M tokens (router, 2026-08-16)",
+            "provider": "huggingface",
+            "source": "https://huggingface.co/Qwen/Qwen3-Coder-30B-A3B-Instruct",
+            "task": "text-generation",
+            "transport": "wired"
+          },
+          "output_schema": {
+            "format": "plain",
+            "type": "text"
+          },
+          "quality_priors": {},
+          "resource_class": "llm",
+          "resource_id": "hf_qwen3_coder_30b_a3b",
+          "risk_class": "low"
+        },
+        {
+          "availability": {
+            "rate_limit_rpm": 60,
+            "status": "up"
+          },
+          "capabilities": [
+            "reasoning.deep",
+            "reasoning.shallow"
+          ],
+          "cost_model": {
+            "estimate_usd": 0.0,
+            "unit": "per_1k_tokens"
+          },
+          "input_schema": {
+            "format": "plain",
+            "type": "text"
+          },
+          "latency_model": {
+            "p50_ms": 1000,
+            "p95_ms": 4000
+          },
+          "metadata": {
+            "capability_provenance": "{\"reasoning.deep\": \"documented\", \"reasoning.shallow\": \"documented\"}",
+            "context_length": "not stated on card",
+            "declared": "capabilities declared from model documentation; cost/latency/quality unmeasured (architecture defaults)",
+            "hf_provider": "auto",
+            "interface": "chat_completion",
+            "modality": "text",
+            "model": "deepseek-ai/DeepSeek-R1-Distill-Qwen-32B",
+            "params": "32B (dense; distilled from Qwen2.5-32B)",
+            "price": "not published (featherless-ai, live; billed per compute)",
+            "provider": "huggingface",
+            "source": "https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Qwen-32B",
+            "task": "text-generation",
+            "transport": "wired"
+          },
+          "output_schema": {
+            "format": "plain",
+            "type": "text"
+          },
+          "quality_priors": {},
+          "resource_class": "llm",
+          "resource_id": "hf_deepseek_r1_distill_qwen_32b",
+          "risk_class": "low"
+        },
+        {
+          "availability": {
+            "rate_limit_rpm": 60,
+            "status": "up"
+          },
+          "capabilities": [
+            "reasoning.deep",
+            "reasoning.shallow",
+            "code.generation",
+            "tool.calling",
+            "text.summarization",
+            "text.classification",
+            "answer.synthesis",
+            "planning.decomposition"
+          ],
+          "cost_model": {
+            "estimate_usd": 0.0,
+            "unit": "per_1k_tokens"
+          },
+          "input_schema": {
+            "format": "plain",
+            "type": "text"
+          },
+          "latency_model": {
+            "p50_ms": 1000,
+            "p95_ms": 4000
+          },
+          "metadata": {
+            "capability_provenance": "{\"answer.synthesis\": \"inferred\", \"code.generation\": \"documented\", \"planning.decomposition\": \"inferred\", \"reasoning.deep\": \"documented\", \"reasoning.shallow\": \"documented\", \"text.classification\": \"inferred\", \"text.summarization\": \"inferred\", \"tool.calling\": \"documented\"}",
+            "context_length": "128K",
+            "declared": "capabilities declared from model documentation; cost/latency/quality unmeasured (architecture defaults)",
+            "hf_provider": "auto",
+            "interface": "chat_completion",
+            "modality": "text in / text+code out (multilingual)",
+            "model": "meta-llama/Llama-3.3-70B-Instruct",
+            "params": "70B (dense; ~71B per HF metadata)",
+            "price": "novita $0.135/$0.40 per 1M tokens (cheapest live router provider, 2026-08-16; also groq $0.59/$0.79, together $1.04/$1.04)",
+            "provider": "huggingface",
+            "source": "https://huggingface.co/meta-llama/Llama-3.3-70B-Instruct",
+            "task": "text-generation",
+            "transport": "wired"
+          },
+          "output_schema": {
+            "format": "plain",
+            "type": "text"
+          },
+          "quality_priors": {},
+          "resource_class": "llm",
+          "resource_id": "hf_llama3_3_70b_instruct",
+          "risk_class": "low"
+        },
+        {
+          "availability": {
+            "rate_limit_rpm": 60,
+            "status": "up"
+          },
+          "capabilities": [
+            "text.summarization",
+            "tool.calling",
+            "reasoning.shallow",
+            "text.classification"
+          ],
+          "cost_model": {
+            "estimate_usd": 0.0,
+            "unit": "per_1k_tokens"
+          },
+          "input_schema": {
+            "format": "plain",
+            "type": "text"
+          },
+          "latency_model": {
+            "p50_ms": 1000,
+            "p95_ms": 4000
+          },
+          "metadata": {
+            "capability_provenance": "{\"reasoning.shallow\": \"documented\", \"text.classification\": \"inferred\", \"text.summarization\": \"documented\", \"tool.calling\": \"documented\"}",
+            "context_length": "128K",
+            "declared": "capabilities declared from model documentation; cost/latency/quality unmeasured (architecture defaults)",
+            "hf_provider": "auto",
+            "interface": "chat_completion",
+            "modality": "text in / text+code out (multilingual)",
+            "model": "meta-llama/Llama-3.2-3B-Instruct",
+            "params": "3B (dense; 3.21B)",
+            "price": "not published (featherless-ai, live; billed per compute)",
+            "provider": "huggingface",
+            "source": "https://huggingface.co/meta-llama/Llama-3.2-3B-Instruct",
+            "task": "text-generation",
+            "transport": "wired"
+          },
+          "output_schema": {
+            "format": "plain",
+            "type": "text"
+          },
+          "quality_priors": {},
+          "resource_class": "llm",
+          "resource_id": "hf_llama3_2_3b_instruct",
+          "risk_class": "low"
+        },
+        {
+          "availability": {
+            "rate_limit_rpm": 60,
+            "status": "up"
+          },
+          "capabilities": [
+            "reasoning.deep",
+            "reasoning.shallow",
+            "text.summarization",
+            "code.generation",
+            "text.classification"
+          ],
+          "cost_model": {
+            "estimate_usd": 0.0,
+            "unit": "per_1k_tokens"
+          },
+          "input_schema": {
+            "format": "plain",
+            "type": "text"
+          },
+          "latency_model": {
+            "p50_ms": 1000,
+            "p95_ms": 4000
+          },
+          "metadata": {
+            "capability_provenance": "{\"code.generation\": \"documented\", \"reasoning.deep\": \"documented\", \"reasoning.shallow\": \"documented\", \"text.classification\": \"inferred\", \"text.summarization\": \"documented\"}",
+            "context_length": "not stated on card",
+            "declared": "capabilities declared from model documentation; cost/latency/quality unmeasured (architecture defaults)",
+            "hf_provider": "auto",
+            "interface": "chat_completion",
+            "modality": "text (English)",
+            "model": "google/gemma-2-27b-it",
+            "params": "27B (dense)",
+            "price": "not published (featherless-ai, live; billed per compute)",
+            "provider": "huggingface",
+            "source": "https://huggingface.co/google/gemma-2-27b-it",
+            "task": "text-generation",
+            "transport": "wired"
+          },
+          "output_schema": {
+            "format": "plain",
+            "type": "text"
+          },
+          "quality_priors": {},
+          "resource_class": "llm",
+          "resource_id": "hf_gemma2_27b_it",
+          "risk_class": "low"
+        },
+        {
+          "availability": {
+            "rate_limit_rpm": 60,
+            "status": "up"
+          },
+          "capabilities": [
+            "embedding.generation"
+          ],
+          "cost_model": {
+            "estimate_usd": 0.0,
+            "unit": "per_1k_tokens"
+          },
+          "input_schema": {
+            "format": "plain",
+            "type": "text"
+          },
+          "latency_model": {
+            "p50_ms": 1000,
+            "p95_ms": 4000
+          },
+          "metadata": {
+            "capability_provenance": "{\"embedding.generation\": \"documented\"}",
+            "context_length": "512 tokens (sequence length, MTEB)",
+            "declared": "capabilities declared from model documentation; cost/latency/quality unmeasured (architecture defaults)",
+            "hf_provider": "auto",
+            "interface": "feature_extraction",
+            "modality": "text (sentence embeddings; English)",
+            "model": "BAAI/bge-large-en-v1.5",
+            "params": "335M (dense BERT bi-encoder; 1024-dim embeddings)",
+            "price": "not published (hf-inference, feature-extraction; billed by compute time)",
+            "provider": "huggingface",
+            "source": "https://huggingface.co/BAAI/bge-large-en-v1.5",
+            "task": "feature-extraction",
+            "transport": "declared"
+          },
+          "output_schema": {
+            "format": "plain",
+            "type": "text"
+          },
+          "quality_priors": {},
+          "resource_class": "embedder",
+          "resource_id": "hf_bge_large_en_v1_5",
+          "risk_class": "low"
+        },
+        {
+          "availability": {
+            "rate_limit_rpm": 60,
+            "status": "up"
+          },
+          "capabilities": [
+            "rerank.scoring"
+          ],
+          "cost_model": {
+            "estimate_usd": 0.0,
+            "unit": "per_1k_tokens"
+          },
+          "input_schema": {
+            "format": "plain",
+            "type": "text"
+          },
+          "latency_model": {
+            "p50_ms": 1000,
+            "p95_ms": 4000
+          },
+          "metadata": {
+            "capability_provenance": "{\"rerank.scoring\": \"documented\"}",
+            "context_length": "512 tokens (usage examples truncate at max_length=512)",
+            "declared": "capabilities declared from model documentation; cost/latency/quality unmeasured (architecture defaults)",
+            "hf_provider": "auto",
+            "interface": "rerank",
+            "modality": "text (multilingual reranking)",
+            "model": "BAAI/bge-reranker-v2-m3",
+            "params": "568M (dense cross-encoder; based on bge-m3)",
+            "price": "not published (hf-inference, text-classification; billed by compute time)",
+            "provider": "huggingface",
+            "source": "https://huggingface.co/BAAI/bge-reranker-v2-m3",
+            "task": "text-reranking",
+            "transport": "declared"
+          },
+          "output_schema": {
+            "format": "plain",
+            "type": "text"
+          },
+          "quality_priors": {},
+          "resource_class": "reranker",
+          "resource_id": "hf_bge_reranker_v2_m3",
+          "risk_class": "low"
+        },
+        {
+          "availability": {
+            "rate_limit_rpm": 60,
+            "status": "up"
+          },
+          "capabilities": [
+            "audio_input",
+            "speech_recognition",
+            "automatic_speech_recognition",
+            "speech_to_text",
+            "transcription",
+            "multilingual_speech",
+            "speech.transcription"
+          ],
+          "cost_model": {
+            "estimate_usd": 0.0,
+            "unit": "per_1k_tokens"
+          },
+          "input_schema": {
+            "format": "plain",
+            "type": "audio"
+          },
+          "latency_model": {
+            "p50_ms": 1000,
+            "p95_ms": 4000
+          },
+          "metadata": {
+            "capability_provenance": "{\"audio_input\": \"documented\", \"automatic_speech_recognition\": \"documented\", \"multilingual_speech\": \"documented\", \"speech.transcription\": \"documented\", \"speech_recognition\": \"documented\", \"speech_to_text\": \"inferred\", \"transcription\": \"documented\"}",
+            "context_length": "30-second audio receptive field (token context not stated)",
+            "declared": "capabilities declared from model documentation; cost/latency/quality unmeasured (architecture defaults)",
+            "hf_provider": "auto",
+            "interface": "automatic_speech_recognition",
+            "modality": "audio (99 languages)",
+            "model": "openai/whisper-large-v3-turbo",
+            "params": "809M (dense encoder-decoder)",
+            "price": "not published (hf-inference/deepinfra; billed by compute time)",
+            "provider": "huggingface",
+            "source": "https://huggingface.co/openai/whisper-large-v3-turbo",
+            "task": "automatic-speech-recognition",
+            "transport": "declared"
+          },
+          "output_schema": {
+            "format": "plain",
+            "type": "text"
+          },
+          "quality_priors": {},
+          "resource_class": "asr",
+          "resource_id": "hf_whisper_large_v3_turbo",
+          "risk_class": "low"
+        },
+        {
+          "availability": {
+            "rate_limit_rpm": 60,
+            "status": "up"
+          },
+          "capabilities": [
+            "audio_input",
+            "speech_recognition",
+            "automatic_speech_recognition",
+            "speech_to_text",
+            "transcription",
+            "multilingual_speech",
+            "speech.transcription"
+          ],
+          "cost_model": {
+            "estimate_usd": 0.0,
+            "unit": "per_1k_tokens"
+          },
+          "input_schema": {
+            "format": "plain",
+            "type": "audio"
+          },
+          "latency_model": {
+            "p50_ms": 1000,
+            "p95_ms": 4000
+          },
+          "metadata": {
+            "capability_provenance": "{\"audio_input\": \"documented\", \"automatic_speech_recognition\": \"documented\", \"multilingual_speech\": \"documented\", \"speech.transcription\": \"documented\", \"speech_recognition\": \"documented\", \"speech_to_text\": \"inferred\", \"transcription\": \"documented\"}",
+            "context_length": "30-second receptive field (optimal chunk 30s; long-form via chunking)",
+            "declared": "capabilities declared from model documentation; cost/latency/quality unmeasured (architecture defaults)",
+            "hf_provider": "auto",
+            "interface": "automatic_speech_recognition",
+            "modality": "audio (99 languages) -> text",
+            "model": "openai/whisper-large-v3",
+            "params": "1.55B (dense encoder-decoder; 1.54B weights)",
+            "price": "fal + others on HF router (2026-08-16); audio transport not wired; billed by compute time, not tokens",
+            "provider": "huggingface",
+            "source": "https://huggingface.co/openai/whisper-large-v3",
+            "task": "automatic-speech-recognition",
+            "transport": "declared"
+          },
+          "output_schema": {
+            "format": "plain",
+            "type": "text"
+          },
+          "quality_priors": {},
+          "resource_class": "asr",
+          "resource_id": "hf_whisper_large_v3",
+          "risk_class": "low"
+        },
+        {
+          "availability": {
+            "rate_limit_rpm": 60,
+            "status": "up"
+          },
+          "capabilities": [
+            "audio_input",
+            "audio_understanding",
+            "speech_understanding",
+            "audio_analysis",
+            "audio_to_text",
+            "instruction_following"
+          ],
+          "cost_model": {
+            "estimate_usd": 0.0,
+            "unit": "per_1k_tokens"
+          },
+          "input_schema": {
+            "format": "plain",
+            "type": "audio"
+          },
+          "latency_model": {
+            "p50_ms": 1000,
+            "p95_ms": 4000
+          },
+          "metadata": {
+            "capability_provenance": "{\"audio_analysis\": \"documented\", \"audio_input\": \"documented\", \"audio_to_text\": \"inferred\", \"audio_understanding\": \"inferred\", \"instruction_following\": \"inferred\", \"speech_understanding\": \"inferred\"}",
+            "context_length": "not stated on card",
+            "declared": "capabilities declared from model documentation; cost/latency/quality unmeasured (architecture defaults)",
+            "hf_provider": "auto",
+            "interface": "audio_chat_completion",
+            "modality": "audio + text -> text",
+            "model": "Qwen/Qwen2-Audio-7B-Instruct",
+            "params": "8.4B total (audio encoder + Qwen2 text decoder)",
+            "price": "not deployed by any Inference Provider (2026-08-16); audio transport not wired",
+            "provider": "huggingface",
+            "source": "https://huggingface.co/Qwen/Qwen2-Audio-7B-Instruct",
+            "task": "audio-text-to-text",
+            "transport": "declared"
+          },
+          "output_schema": {
+            "format": "plain",
+            "type": "text"
+          },
+          "quality_priors": {},
+          "resource_class": "audio",
+          "resource_id": "hf_qwen2_audio_7b_instruct",
+          "risk_class": "low"
+        },
+        {
+          "availability": {
+            "rate_limit_rpm": 60,
+            "status": "up"
+          },
+          "capabilities": [
+            "audio_input",
+            "audio_classification",
+            "sound_classification",
+            "audio_event_recognition"
+          ],
+          "cost_model": {
+            "estimate_usd": 0.0,
+            "unit": "per_1k_tokens"
+          },
+          "input_schema": {
+            "format": "plain",
+            "type": "audio"
+          },
+          "latency_model": {
+            "p50_ms": 1000,
+            "p95_ms": 4000
+          },
+          "metadata": {
+            "capability_provenance": "{\"audio_classification\": \"documented\", \"audio_event_recognition\": \"inferred\", \"audio_input\": \"documented\", \"sound_classification\": \"inferred\"}",
+            "context_length": "~10-second spectrogram clips (implied by checkpoint id audioset-10-10)",
+            "declared": "capabilities declared from model documentation; cost/latency/quality unmeasured (architecture defaults)",
+            "hf_provider": "auto",
+            "interface": "audio_classification",
+            "modality": "audio -> class labels (AudioSet 527 classes)",
+            "model": "MIT/ast-finetuned-audioset-10-10-0.4593",
+            "params": "86.6M (Audio Spectrogram Transformer finetuned on AudioSet)",
+            "price": "not deployed by any Inference Provider (2026-08-16); audio transport not wired",
+            "provider": "huggingface",
+            "source": "https://huggingface.co/MIT/ast-finetuned-audioset-10-10-0.4593",
+            "task": "audio-classification",
+            "transport": "declared"
+          },
+          "output_schema": {
+            "format": "plain",
+            "type": "text"
+          },
+          "quality_priors": {},
+          "resource_class": "audio",
+          "resource_id": "hf_ast_audioset_finetuned",
+          "risk_class": "low"
+        },
+        {
+          "availability": {
+            "rate_limit_rpm": 60,
+            "status": "up"
+          },
+          "capabilities": [
+            "vision_input",
+            "image_classification",
+            "zero_shot_classification",
+            "image_text_matching",
+            "image_text_retrieval",
+            "visual_feature_extraction"
+          ],
+          "cost_model": {
+            "estimate_usd": 0.0,
+            "unit": "per_1k_tokens"
+          },
+          "input_schema": {
+            "format": "plain",
+            "type": "image"
+          },
+          "latency_model": {
+            "p50_ms": 1000,
+            "p95_ms": 4000
+          },
+          "metadata": {
+            "capability_provenance": "{\"image_classification\": \"inferred\", \"image_text_matching\": \"inferred\", \"image_text_retrieval\": \"documented\", \"vision_input\": \"documented\", \"visual_feature_extraction\": \"documented\", \"zero_shot_classification\": \"documented\"}",
+            "context_length": "224x224 input (patch16; aspect-ratio and resolution adaptibility in training)",
+            "declared": "capabilities declared from model documentation; cost/latency/quality unmeasured (architecture defaults)",
+            "hf_provider": "auto",
+            "interface": "zero_shot_image_classification",
+            "modality": "image + text labels -> classification/similarity scores, image & text embeddings",
+            "model": "google/siglip2-base-patch16-224",
+            "params": "~0.4B total (ViT-B/16 image tower + text tower; 375M weights)",
+            "price": "not deployed by any Inference Provider (2026-08-16); vision transport not wired",
+            "provider": "huggingface",
+            "source": "https://huggingface.co/google/siglip2-base-patch16-224",
+            "task": "zero-shot-image-classification",
+            "transport": "declared"
+          },
+          "output_schema": {
+            "format": "plain",
+            "type": "text"
+          },
+          "quality_priors": {},
+          "resource_class": "image",
+          "resource_id": "hf_siglip2_base_224",
+          "risk_class": "low"
+        },
+        {
+          "availability": {
+            "rate_limit_rpm": 60,
+            "status": "up"
+          },
+          "capabilities": [
+            "vision_input",
+            "object_detection",
+            "object_identification",
+            "object_localization",
+            "multi_object_detection"
+          ],
+          "cost_model": {
+            "estimate_usd": 0.0,
+            "unit": "per_1k_tokens"
+          },
+          "input_schema": {
+            "format": "plain",
+            "type": "image"
+          },
+          "latency_model": {
+            "p50_ms": 1000,
+            "p95_ms": 4000
+          },
+          "metadata": {
+            "capability_provenance": "{\"multi_object_detection\": \"inferred\", \"object_detection\": \"documented\", \"object_identification\": \"inferred\", \"object_localization\": \"inferred\", \"vision_input\": \"documented\"}",
+            "context_length": "640x640 input (detection; 224 classification, 1024 OBB per card)",
+            "declared": "capabilities declared from model documentation; cost/latency/quality unmeasured (architecture defaults)",
+            "hf_provider": "auto",
+            "interface": "object_detection",
+            "modality": "image -> bounding boxes, class labels, confidence scores",
+            "model": "Ultralytics/YOLO11",
+            "params": "2.6M (yolo11n) - 56.9M (yolo11x) detection variants (.pt weight archive, not a transformers pipeline model)",
+            "price": "not deployed by any Inference Provider (2026-08-16); .pt weight archive, not a serverless endpoint",
+            "provider": "huggingface",
+            "source": "https://huggingface.co/Ultralytics/YOLO11",
+            "task": "object-detection",
+            "transport": "declared"
+          },
+          "output_schema": {
+            "format": "json",
+            "type": "structured"
+          },
+          "quality_priors": {},
+          "resource_class": "image",
+          "resource_id": "hf_yolo11",
+          "risk_class": "low"
+        },
+        {
+          "availability": {
+            "rate_limit_rpm": 60,
+            "status": "up"
+          },
+          "capabilities": [
+            "vision_input",
+            "visual_feature_extraction",
+            "image_representation",
+            "visual_embedding",
+            "image_similarity"
+          ],
+          "cost_model": {
+            "estimate_usd": 0.0,
+            "unit": "per_1k_tokens"
+          },
+          "input_schema": {
+            "format": "plain",
+            "type": "image"
+          },
+          "latency_model": {
+            "p50_ms": 1000,
+            "p95_ms": 4000
+          },
+          "metadata": {
+            "capability_provenance": "{\"image_representation\": \"documented\", \"image_similarity\": \"inferred\", \"vision_input\": \"documented\", \"visual_embedding\": \"documented\", \"visual_feature_extraction\": \"documented\"}",
+            "context_length": "224x224 -> 1 class + 4 register + 196 patch tokens = 201 tokens; larger images OK if multiples of patch size 16",
+            "declared": "capabilities declared from model documentation; cost/latency/quality unmeasured (architecture defaults)",
+            "hf_provider": "auto",
+            "interface": "image_feature_extraction",
+            "modality": "image -> class / patch / register embedding vectors",
+            "model": "facebook/dinov3-vitb16-pretrain-lvd1689m",
+            "params": "86M (ViT-B/16; 85.7M weights)",
+            "price": "not deployed by any Inference Provider (2026-08-16); model card gated (manual Meta approval form)",
+            "provider": "huggingface",
+            "source": "https://huggingface.co/facebook/dinov3-vitb16-pretrain-lvd1689m",
+            "task": "image-feature-extraction",
+            "transport": "declared"
+          },
+          "output_schema": {
+            "format": "json",
+            "type": "structured"
+          },
+          "quality_priors": {},
+          "resource_class": "image",
+          "resource_id": "hf_dinov3_vitb16",
+          "risk_class": "low"
+        }
+      ]
+    },
+    "mixed": {
+      "distinct_capability_flags": [
+        "answer.synthesis",
+        "audio_analysis",
+        "audio_classification",
+        "audio_event_recognition",
+        "audio_input",
+        "audio_to_text",
+        "audio_understanding",
+        "automatic_speech_recognition",
+        "code.generation",
+        "embedding.generation",
+        "image_classification",
+        "image_representation",
+        "image_similarity",
+        "image_text_matching",
+        "image_text_retrieval",
+        "image_understanding",
+        "instruction_following",
+        "multi_object_detection",
+        "multilingual_speech",
+        "object_detection",
+        "object_identification",
+        "object_localization",
+        "planning.decomposition",
+        "reasoning.deep",
+        "reasoning.shallow",
+        "rerank.scoring",
+        "sound_classification",
+        "speech.transcription",
+        "speech_recognition",
+        "speech_to_text",
+        "speech_understanding",
+        "text.classification",
+        "text.summarization",
+        "tool.calling",
+        "transcription",
+        "vision.understanding",
+        "vision_input",
+        "vision_language",
+        "visual_embedding",
+        "visual_feature_extraction",
+        "visual_question_answering",
+        "visual_reasoning",
+        "web.search",
+        "zero_shot_classification"
+      ],
+      "name": "hf-enabled-registry",
+      "resource_count": 22,
+      "resources": [
+        {
+          "availability": {
+            "rate_limit_rpm": 30,
+            "status": "up"
+          },
+          "capabilities": [
+            "web.search",
+            "tool.calling",
+            "reasoning.shallow"
+          ],
+          "cost_model": {
+            "estimate_usd": 0.004,
+            "unit": "per_call"
+          },
+          "input_schema": {
+            "format": "query",
+            "type": "text"
+          },
+          "latency_model": {
+            "p50_ms": 3000,
+            "p95_ms": 9000
+          },
+          "metadata": {
+            "model": "llama-3.3-70b-versatile",
+            "pipeline": "ddgs_search+groq",
+            "provider": "groq"
+          },
+          "output_schema": {
+            "format": "plain",
+            "type": "text"
+          },
+          "quality_priors": {
+            "reasoning.shallow": 0.6,
+            "tool.calling": 0.8,
+            "web.search": 0.85
+          },
+          "resource_class": "tool",
+          "resource_id": "web_search",
+          "risk_class": "medium"
+        },
+        {
+          "availability": {
+            "rate_limit_rpm": 60,
+            "status": "up"
+          },
+          "capabilities": [
+            "text.summarization",
+            "reasoning.deep",
+            "reasoning.shallow",
+            "planning.decomposition",
+            "text.classification"
+          ],
+          "cost_model": {
+            "estimate_usd": 0.003,
+            "unit": "per_call"
+          },
+          "input_schema": {
+            "format": "plain",
+            "type": "text"
+          },
+          "latency_model": {
+            "p50_ms": 1500,
+            "p95_ms": 5000
+          },
+          "metadata": {
+            "model": "llama-3.3-70b-versatile",
+            "provider": "groq"
+          },
+          "output_schema": {
+            "format": "plain",
+            "type": "text"
+          },
+          "quality_priors": {
+            "planning.decomposition": 0.6,
+            "reasoning.deep": 0.8,
+            "reasoning.shallow": 0.75,
+            "text.classification": 0.55,
+            "text.summarization": 0.85
+          },
+          "resource_class": "llm",
+          "resource_id": "summarization",
+          "risk_class": "low"
+        },
+        {
+          "availability": {
+            "rate_limit_rpm": 120,
+            "status": "up"
+          },
+          "capabilities": [
+            "vision.understanding",
+            "reasoning.shallow",
+            "text.classification"
+          ],
+          "cost_model": {
+            "estimate_usd": 0.0,
+            "unit": "per_call"
+          },
+          "input_schema": {
+            "format": "path",
+            "type": "image"
+          },
+          "latency_model": {
+            "p50_ms": 6000,
+            "p95_ms": 15000
+          },
+          "metadata": {
+            "model": "medgemma1.5:latest",
+            "provider": "ollama"
+          },
+          "output_schema": {
+            "format": "plain",
+            "type": "text"
+          },
+          "quality_priors": {
+            "reasoning.shallow": 0.6,
+            "text.classification": 0.55,
+            "vision.understanding": 0.88
+          },
+          "resource_class": "vlm",
+          "resource_id": "vision",
+          "risk_class": "low"
+        },
+        {
+          "availability": {
+            "rate_limit_rpm": 60,
+            "status": "up"
+          },
+          "capabilities": [
+            "answer.synthesis",
+            "reasoning.deep",
+            "text.summarization",
+            "planning.decomposition",
+            "reasoning.shallow"
+          ],
+          "cost_model": {
+            "estimate_usd": 0.006,
+            "unit": "per_call"
+          },
+          "input_schema": {
+            "format": "plain",
+            "type": "text"
+          },
+          "latency_model": {
+            "p50_ms": 3500,
+            "p95_ms": 9000
+          },
+          "metadata": {
+            "model": "llama-3.3-70b-versatile",
+            "provider": "groq"
+          },
+          "output_schema": {
+            "format": "markdown",
+            "type": "text"
+          },
+          "quality_priors": {
+            "answer.synthesis": 0.92,
+            "planning.decomposition": 0.75,
+            "reasoning.deep": 0.9,
+            "reasoning.shallow": 0.7,
+            "text.summarization": 0.7
+          },
+          "resource_class": "llm",
+          "resource_id": "synthesis",
+          "risk_class": "low"
+        },
+        {
+          "availability": {
+            "rate_limit_rpm": 60,
+            "status": "up"
+          },
+          "capabilities": [
+            "text.summarization",
+            "text.classification",
+            "reasoning.shallow"
+          ],
+          "cost_model": {
+            "estimate_usd": 0.001,
+            "unit": "per_call"
+          },
+          "input_schema": {
+            "format": "plain",
+            "type": "text"
+          },
+          "latency_model": {
+            "p50_ms": 700,
+            "p95_ms": 2200
+          },
+          "metadata": {
+            "model": "llama-3.3-70b-versatile",
+            "provider": "groq"
+          },
+          "output_schema": {
+            "format": "plain",
+            "type": "text"
+          },
+          "quality_priors": {
+            "reasoning.shallow": 0.7,
+            "text.classification": 0.8,
+            "text.summarization": 0.65
+          },
+          "resource_class": "llm",
+          "resource_id": "quick_summarization",
+          "risk_class": "low"
+        },
+        {
+          "availability": {
+            "rate_limit_rpm": 60,
+            "status": "up"
+          },
+          "capabilities": [
+            "reasoning.deep",
+            "reasoning.shallow",
+            "tool.calling",
+            "text.summarization",
+            "text.classification",
+            "answer.synthesis",
+            "planning.decomposition"
+          ],
+          "cost_model": {
+            "estimate_usd": 0.0,
+            "unit": "per_1k_tokens"
+          },
+          "input_schema": {
+            "format": "plain",
+            "type": "text"
+          },
+          "latency_model": {
+            "p50_ms": 1000,
+            "p95_ms": 4000
+          },
+          "metadata": {
+            "capability_provenance": "{\"answer.synthesis\": \"inferred\", \"planning.decomposition\": \"inferred\", \"reasoning.deep\": \"documented\", \"reasoning.shallow\": \"documented\", \"text.classification\": \"inferred\", \"text.summarization\": \"inferred\", \"tool.calling\": \"documented\"}",
+            "context_length": "40,960 (router/sibling); card gated",
+            "declared": "capabilities declared from model documentation; cost/latency/quality unmeasured (architecture defaults)",
+            "hf_provider": "auto",
+            "interface": "chat_completion",
+            "modality": "text",
+            "model": "Qwen/Qwen3-30B-A3B-Instruct",
+            "params": "~30B total / ~3.3B active (MoE, A3B); exact figures unverified (card gated)",
+            "price": "sibling Qwen/Qwen3-30B-A3B served by deepinfra at $0.12/$0.50 per 1M tokens (router, 2026-08-16); exact-id price unverified",
+            "provider": "huggingface",
+            "source": "https://huggingface.co/Qwen/Qwen3-30B-A3B-Instruct",
+            "task": "text-generation",
+            "transport": "wired"
+          },
+          "output_schema": {
+            "format": "plain",
+            "type": "text"
+          },
+          "quality_priors": {},
+          "resource_class": "llm",
+          "resource_id": "hf_qwen3_30b_a3b_instruct",
+          "risk_class": "low"
+        },
+        {
+          "availability": {
+            "rate_limit_rpm": 60,
+            "status": "up"
+          },
+          "capabilities": [
+            "reasoning.shallow",
+            "tool.calling",
+            "text.summarization",
+            "text.classification"
+          ],
+          "cost_model": {
+            "estimate_usd": 0.0,
+            "unit": "per_1k_tokens"
+          },
+          "input_schema": {
+            "format": "plain",
+            "type": "text"
+          },
+          "latency_model": {
+            "p50_ms": 1000,
+            "p95_ms": 4000
+          },
+          "metadata": {
+            "capability_provenance": "{\"reasoning.shallow\": \"documented\", \"text.classification\": \"inferred\", \"text.summarization\": \"inferred\", \"tool.calling\": \"documented\"}",
+            "context_length": "32,768 native / 131,072 via YaRN (router: 40,960)",
+            "declared": "capabilities declared from model documentation; cost/latency/quality unmeasured (architecture defaults)",
+            "hf_provider": "auto",
+            "interface": "chat_completion",
+            "modality": "text",
+            "model": "Qwen/Qwen3-8B",
+            "params": "8.2B total / 6.95B non-embedding (dense)",
+            "price": "nscale $0.07/$0.18 per 1M tokens (router, 2026-08-16)",
+            "provider": "huggingface",
+            "source": "https://huggingface.co/Qwen/Qwen3-8B",
+            "task": "text-generation",
+            "transport": "wired"
+          },
+          "output_schema": {
+            "format": "plain",
+            "type": "text"
+          },
+          "quality_priors": {},
+          "resource_class": "llm",
+          "resource_id": "hf_qwen3_8b",
+          "risk_class": "low"
+        },
+        {
+          "availability": {
+            "rate_limit_rpm": 60,
+            "status": "up"
+          },
+          "capabilities": [
+            "vision.understanding",
+            "vision_input",
+            "image_understanding",
+            "visual_question_answering",
+            "visual_reasoning",
+            "vision_language",
+            "instruction_following",
+            "tool.calling",
+            "reasoning.shallow",
+            "text.classification"
+          ],
+          "cost_model": {
+            "estimate_usd": 0.0,
+            "unit": "per_1k_tokens"
+          },
+          "input_schema": {
+            "format": "plain",
+            "type": "image"
+          },
+          "latency_model": {
+            "p50_ms": 1000,
+            "p95_ms": 4000
+          },
+          "metadata": {
+            "capability_provenance": "{\"image_understanding\": \"documented\", \"instruction_following\": \"inferred\", \"reasoning.shallow\": \"documented\", \"text.classification\": \"inferred\", \"tool.calling\": \"documented\", \"vision.understanding\": \"documented\", \"vision_input\": \"documented\", \"vision_language\": \"documented\", \"visual_question_answering\": \"documented\", \"visual_reasoning\": \"documented\"}",
+            "context_length": "32,768 (64K suggested for long video)",
+            "declared": "capabilities declared from model documentation; cost/latency/quality unmeasured (architecture defaults)",
+            "hf_provider": "auto",
+            "interface": "chat_completion",
+            "modality": "text + image + video",
+            "model": "Qwen/Qwen2.5-VL-7B-Instruct",
+            "params": "7B (dense)",
+            "price": "not published (featherless-ai, live; billed per compute)",
+            "provider": "huggingface",
+            "source": "https://huggingface.co/Qwen/Qwen2.5-VL-7B-Instruct",
+            "task": "visual-question-answering",
+            "transport": "wired"
+          },
+          "output_schema": {
+            "format": "plain",
+            "type": "text"
+          },
+          "quality_priors": {},
+          "resource_class": "vlm",
+          "resource_id": "hf_qwen2_5_vl_7b_instruct",
+          "risk_class": "low"
+        },
+        {
+          "availability": {
+            "rate_limit_rpm": 60,
+            "status": "up"
+          },
+          "capabilities": [
+            "code.generation",
+            "tool.calling",
+            "reasoning.deep",
+            "reasoning.shallow"
+          ],
+          "cost_model": {
+            "estimate_usd": 0.0,
+            "unit": "per_1k_tokens"
+          },
+          "input_schema": {
+            "format": "plain",
+            "type": "text"
+          },
+          "latency_model": {
+            "p50_ms": 1000,
+            "p95_ms": 4000
+          },
+          "metadata": {
+            "capability_provenance": "{\"code.generation\": \"documented\", \"reasoning.deep\": \"documented\", \"reasoning.shallow\": \"documented\", \"tool.calling\": \"documented\"}",
+            "context_length": "262,144 native / 1M via YaRN",
+            "declared": "capabilities declared from model documentation; cost/latency/quality unmeasured (architecture defaults)",
+            "hf_provider": "auto",
+            "interface": "chat_completion",
+            "modality": "text",
+            "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+            "params": "30.5B total / 3.3B active (MoE, 128 experts / 8 active)",
+            "price": "scaleway $0.228/$0.912 per 1M tokens (router, 2026-08-16)",
+            "provider": "huggingface",
+            "source": "https://huggingface.co/Qwen/Qwen3-Coder-30B-A3B-Instruct",
+            "task": "text-generation",
+            "transport": "wired"
+          },
+          "output_schema": {
+            "format": "plain",
+            "type": "text"
+          },
+          "quality_priors": {},
+          "resource_class": "llm",
+          "resource_id": "hf_qwen3_coder_30b_a3b",
+          "risk_class": "low"
+        },
+        {
+          "availability": {
+            "rate_limit_rpm": 60,
+            "status": "up"
+          },
+          "capabilities": [
+            "reasoning.deep",
+            "reasoning.shallow"
+          ],
+          "cost_model": {
+            "estimate_usd": 0.0,
+            "unit": "per_1k_tokens"
+          },
+          "input_schema": {
+            "format": "plain",
+            "type": "text"
+          },
+          "latency_model": {
+            "p50_ms": 1000,
+            "p95_ms": 4000
+          },
+          "metadata": {
+            "capability_provenance": "{\"reasoning.deep\": \"documented\", \"reasoning.shallow\": \"documented\"}",
+            "context_length": "not stated on card",
+            "declared": "capabilities declared from model documentation; cost/latency/quality unmeasured (architecture defaults)",
+            "hf_provider": "auto",
+            "interface": "chat_completion",
+            "modality": "text",
+            "model": "deepseek-ai/DeepSeek-R1-Distill-Qwen-32B",
+            "params": "32B (dense; distilled from Qwen2.5-32B)",
+            "price": "not published (featherless-ai, live; billed per compute)",
+            "provider": "huggingface",
+            "source": "https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Qwen-32B",
+            "task": "text-generation",
+            "transport": "wired"
+          },
+          "output_schema": {
+            "format": "plain",
+            "type": "text"
+          },
+          "quality_priors": {},
+          "resource_class": "llm",
+          "resource_id": "hf_deepseek_r1_distill_qwen_32b",
+          "risk_class": "low"
+        },
+        {
+          "availability": {
+            "rate_limit_rpm": 60,
+            "status": "up"
+          },
+          "capabilities": [
+            "reasoning.deep",
+            "reasoning.shallow",
+            "code.generation",
+            "tool.calling",
+            "text.summarization",
+            "text.classification",
+            "answer.synthesis",
+            "planning.decomposition"
+          ],
+          "cost_model": {
+            "estimate_usd": 0.0,
+            "unit": "per_1k_tokens"
+          },
+          "input_schema": {
+            "format": "plain",
+            "type": "text"
+          },
+          "latency_model": {
+            "p50_ms": 1000,
+            "p95_ms": 4000
+          },
+          "metadata": {
+            "capability_provenance": "{\"answer.synthesis\": \"inferred\", \"code.generation\": \"documented\", \"planning.decomposition\": \"inferred\", \"reasoning.deep\": \"documented\", \"reasoning.shallow\": \"documented\", \"text.classification\": \"inferred\", \"text.summarization\": \"inferred\", \"tool.calling\": \"documented\"}",
+            "context_length": "128K",
+            "declared": "capabilities declared from model documentation; cost/latency/quality unmeasured (architecture defaults)",
+            "hf_provider": "auto",
+            "interface": "chat_completion",
+            "modality": "text in / text+code out (multilingual)",
+            "model": "meta-llama/Llama-3.3-70B-Instruct",
+            "params": "70B (dense; ~71B per HF metadata)",
+            "price": "novita $0.135/$0.40 per 1M tokens (cheapest live router provider, 2026-08-16; also groq $0.59/$0.79, together $1.04/$1.04)",
+            "provider": "huggingface",
+            "source": "https://huggingface.co/meta-llama/Llama-3.3-70B-Instruct",
+            "task": "text-generation",
+            "transport": "wired"
+          },
+          "output_schema": {
+            "format": "plain",
+            "type": "text"
+          },
+          "quality_priors": {},
+          "resource_class": "llm",
+          "resource_id": "hf_llama3_3_70b_instruct",
+          "risk_class": "low"
+        },
+        {
+          "availability": {
+            "rate_limit_rpm": 60,
+            "status": "up"
+          },
+          "capabilities": [
+            "text.summarization",
+            "tool.calling",
+            "reasoning.shallow",
+            "text.classification"
+          ],
+          "cost_model": {
+            "estimate_usd": 0.0,
+            "unit": "per_1k_tokens"
+          },
+          "input_schema": {
+            "format": "plain",
+            "type": "text"
+          },
+          "latency_model": {
+            "p50_ms": 1000,
+            "p95_ms": 4000
+          },
+          "metadata": {
+            "capability_provenance": "{\"reasoning.shallow\": \"documented\", \"text.classification\": \"inferred\", \"text.summarization\": \"documented\", \"tool.calling\": \"documented\"}",
+            "context_length": "128K",
+            "declared": "capabilities declared from model documentation; cost/latency/quality unmeasured (architecture defaults)",
+            "hf_provider": "auto",
+            "interface": "chat_completion",
+            "modality": "text in / text+code out (multilingual)",
+            "model": "meta-llama/Llama-3.2-3B-Instruct",
+            "params": "3B (dense; 3.21B)",
+            "price": "not published (featherless-ai, live; billed per compute)",
+            "provider": "huggingface",
+            "source": "https://huggingface.co/meta-llama/Llama-3.2-3B-Instruct",
+            "task": "text-generation",
+            "transport": "wired"
+          },
+          "output_schema": {
+            "format": "plain",
+            "type": "text"
+          },
+          "quality_priors": {},
+          "resource_class": "llm",
+          "resource_id": "hf_llama3_2_3b_instruct",
+          "risk_class": "low"
+        },
+        {
+          "availability": {
+            "rate_limit_rpm": 60,
+            "status": "up"
+          },
+          "capabilities": [
+            "reasoning.deep",
+            "reasoning.shallow",
+            "text.summarization",
+            "code.generation",
+            "text.classification"
+          ],
+          "cost_model": {
+            "estimate_usd": 0.0,
+            "unit": "per_1k_tokens"
+          },
+          "input_schema": {
+            "format": "plain",
+            "type": "text"
+          },
+          "latency_model": {
+            "p50_ms": 1000,
+            "p95_ms": 4000
+          },
+          "metadata": {
+            "capability_provenance": "{\"code.generation\": \"documented\", \"reasoning.deep\": \"documented\", \"reasoning.shallow\": \"documented\", \"text.classification\": \"inferred\", \"text.summarization\": \"documented\"}",
+            "context_length": "not stated on card",
+            "declared": "capabilities declared from model documentation; cost/latency/quality unmeasured (architecture defaults)",
+            "hf_provider": "auto",
+            "interface": "chat_completion",
+            "modality": "text (English)",
+            "model": "google/gemma-2-27b-it",
+            "params": "27B (dense)",
+            "price": "not published (featherless-ai, live; billed per compute)",
+            "provider": "huggingface",
+            "source": "https://huggingface.co/google/gemma-2-27b-it",
+            "task": "text-generation",
+            "transport": "wired"
+          },
+          "output_schema": {
+            "format": "plain",
+            "type": "text"
+          },
+          "quality_priors": {},
+          "resource_class": "llm",
+          "resource_id": "hf_gemma2_27b_it",
+          "risk_class": "low"
+        },
+        {
+          "availability": {
+            "rate_limit_rpm": 60,
+            "status": "up"
+          },
+          "capabilities": [
+            "embedding.generation"
+          ],
+          "cost_model": {
+            "estimate_usd": 0.0,
+            "unit": "per_1k_tokens"
+          },
+          "input_schema": {
+            "format": "plain",
+            "type": "text"
+          },
+          "latency_model": {
+            "p50_ms": 1000,
+            "p95_ms": 4000
+          },
+          "metadata": {
+            "capability_provenance": "{\"embedding.generation\": \"documented\"}",
+            "context_length": "512 tokens (sequence length, MTEB)",
+            "declared": "capabilities declared from model documentation; cost/latency/quality unmeasured (architecture defaults)",
+            "hf_provider": "auto",
+            "interface": "feature_extraction",
+            "modality": "text (sentence embeddings; English)",
+            "model": "BAAI/bge-large-en-v1.5",
+            "params": "335M (dense BERT bi-encoder; 1024-dim embeddings)",
+            "price": "not published (hf-inference, feature-extraction; billed by compute time)",
+            "provider": "huggingface",
+            "source": "https://huggingface.co/BAAI/bge-large-en-v1.5",
+            "task": "feature-extraction",
+            "transport": "declared"
+          },
+          "output_schema": {
+            "format": "plain",
+            "type": "text"
+          },
+          "quality_priors": {},
+          "resource_class": "embedder",
+          "resource_id": "hf_bge_large_en_v1_5",
+          "risk_class": "low"
+        },
+        {
+          "availability": {
+            "rate_limit_rpm": 60,
+            "status": "up"
+          },
+          "capabilities": [
+            "rerank.scoring"
+          ],
+          "cost_model": {
+            "estimate_usd": 0.0,
+            "unit": "per_1k_tokens"
+          },
+          "input_schema": {
+            "format": "plain",
+            "type": "text"
+          },
+          "latency_model": {
+            "p50_ms": 1000,
+            "p95_ms": 4000
+          },
+          "metadata": {
+            "capability_provenance": "{\"rerank.scoring\": \"documented\"}",
+            "context_length": "512 tokens (usage examples truncate at max_length=512)",
+            "declared": "capabilities declared from model documentation; cost/latency/quality unmeasured (architecture defaults)",
+            "hf_provider": "auto",
+            "interface": "rerank",
+            "modality": "text (multilingual reranking)",
+            "model": "BAAI/bge-reranker-v2-m3",
+            "params": "568M (dense cross-encoder; based on bge-m3)",
+            "price": "not published (hf-inference, text-classification; billed by compute time)",
+            "provider": "huggingface",
+            "source": "https://huggingface.co/BAAI/bge-reranker-v2-m3",
+            "task": "text-reranking",
+            "transport": "declared"
+          },
+          "output_schema": {
+            "format": "plain",
+            "type": "text"
+          },
+          "quality_priors": {},
+          "resource_class": "reranker",
+          "resource_id": "hf_bge_reranker_v2_m3",
+          "risk_class": "low"
+        },
+        {
+          "availability": {
+            "rate_limit_rpm": 60,
+            "status": "up"
+          },
+          "capabilities": [
+            "audio_input",
+            "speech_recognition",
+            "automatic_speech_recognition",
+            "speech_to_text",
+            "transcription",
+            "multilingual_speech",
+            "speech.transcription"
+          ],
+          "cost_model": {
+            "estimate_usd": 0.0,
+            "unit": "per_1k_tokens"
+          },
+          "input_schema": {
+            "format": "plain",
+            "type": "audio"
+          },
+          "latency_model": {
+            "p50_ms": 1000,
+            "p95_ms": 4000
+          },
+          "metadata": {
+            "capability_provenance": "{\"audio_input\": \"documented\", \"automatic_speech_recognition\": \"documented\", \"multilingual_speech\": \"documented\", \"speech.transcription\": \"documented\", \"speech_recognition\": \"documented\", \"speech_to_text\": \"inferred\", \"transcription\": \"documented\"}",
+            "context_length": "30-second audio receptive field (token context not stated)",
+            "declared": "capabilities declared from model documentation; cost/latency/quality unmeasured (architecture defaults)",
+            "hf_provider": "auto",
+            "interface": "automatic_speech_recognition",
+            "modality": "audio (99 languages)",
+            "model": "openai/whisper-large-v3-turbo",
+            "params": "809M (dense encoder-decoder)",
+            "price": "not published (hf-inference/deepinfra; billed by compute time)",
+            "provider": "huggingface",
+            "source": "https://huggingface.co/openai/whisper-large-v3-turbo",
+            "task": "automatic-speech-recognition",
+            "transport": "declared"
+          },
+          "output_schema": {
+            "format": "plain",
+            "type": "text"
+          },
+          "quality_priors": {},
+          "resource_class": "asr",
+          "resource_id": "hf_whisper_large_v3_turbo",
+          "risk_class": "low"
+        },
+        {
+          "availability": {
+            "rate_limit_rpm": 60,
+            "status": "up"
+          },
+          "capabilities": [
+            "audio_input",
+            "speech_recognition",
+            "automatic_speech_recognition",
+            "speech_to_text",
+            "transcription",
+            "multilingual_speech",
+            "speech.transcription"
+          ],
+          "cost_model": {
+            "estimate_usd": 0.0,
+            "unit": "per_1k_tokens"
+          },
+          "input_schema": {
+            "format": "plain",
+            "type": "audio"
+          },
+          "latency_model": {
+            "p50_ms": 1000,
+            "p95_ms": 4000
+          },
+          "metadata": {
+            "capability_provenance": "{\"audio_input\": \"documented\", \"automatic_speech_recognition\": \"documented\", \"multilingual_speech\": \"documented\", \"speech.transcription\": \"documented\", \"speech_recognition\": \"documented\", \"speech_to_text\": \"inferred\", \"transcription\": \"documented\"}",
+            "context_length": "30-second receptive field (optimal chunk 30s; long-form via chunking)",
+            "declared": "capabilities declared from model documentation; cost/latency/quality unmeasured (architecture defaults)",
+            "hf_provider": "auto",
+            "interface": "automatic_speech_recognition",
+            "modality": "audio (99 languages) -> text",
+            "model": "openai/whisper-large-v3",
+            "params": "1.55B (dense encoder-decoder; 1.54B weights)",
+            "price": "fal + others on HF router (2026-08-16); audio transport not wired; billed by compute time, not tokens",
+            "provider": "huggingface",
+            "source": "https://huggingface.co/openai/whisper-large-v3",
+            "task": "automatic-speech-recognition",
+            "transport": "declared"
+          },
+          "output_schema": {
+            "format": "plain",
+            "type": "text"
+          },
+          "quality_priors": {},
+          "resource_class": "asr",
+          "resource_id": "hf_whisper_large_v3",
+          "risk_class": "low"
+        },
+        {
+          "availability": {
+            "rate_limit_rpm": 60,
+            "status": "up"
+          },
+          "capabilities": [
+            "audio_input",
+            "audio_understanding",
+            "speech_understanding",
+            "audio_analysis",
+            "audio_to_text",
+            "instruction_following"
+          ],
+          "cost_model": {
+            "estimate_usd": 0.0,
+            "unit": "per_1k_tokens"
+          },
+          "input_schema": {
+            "format": "plain",
+            "type": "audio"
+          },
+          "latency_model": {
+            "p50_ms": 1000,
+            "p95_ms": 4000
+          },
+          "metadata": {
+            "capability_provenance": "{\"audio_analysis\": \"documented\", \"audio_input\": \"documented\", \"audio_to_text\": \"inferred\", \"audio_understanding\": \"inferred\", \"instruction_following\": \"inferred\", \"speech_understanding\": \"inferred\"}",
+            "context_length": "not stated on card",
+            "declared": "capabilities declared from model documentation; cost/latency/quality unmeasured (architecture defaults)",
+            "hf_provider": "auto",
+            "interface": "audio_chat_completion",
+            "modality": "audio + text -> text",
+            "model": "Qwen/Qwen2-Audio-7B-Instruct",
+            "params": "8.4B total (audio encoder + Qwen2 text decoder)",
+            "price": "not deployed by any Inference Provider (2026-08-16); audio transport not wired",
+            "provider": "huggingface",
+            "source": "https://huggingface.co/Qwen/Qwen2-Audio-7B-Instruct",
+            "task": "audio-text-to-text",
+            "transport": "declared"
+          },
+          "output_schema": {
+            "format": "plain",
+            "type": "text"
+          },
+          "quality_priors": {},
+          "resource_class": "audio",
+          "resource_id": "hf_qwen2_audio_7b_instruct",
+          "risk_class": "low"
+        },
+        {
+          "availability": {
+            "rate_limit_rpm": 60,
+            "status": "up"
+          },
+          "capabilities": [
+            "audio_input",
+            "audio_classification",
+            "sound_classification",
+            "audio_event_recognition"
+          ],
+          "cost_model": {
+            "estimate_usd": 0.0,
+            "unit": "per_1k_tokens"
+          },
+          "input_schema": {
+            "format": "plain",
+            "type": "audio"
+          },
+          "latency_model": {
+            "p50_ms": 1000,
+            "p95_ms": 4000
+          },
+          "metadata": {
+            "capability_provenance": "{\"audio_classification\": \"documented\", \"audio_event_recognition\": \"inferred\", \"audio_input\": \"documented\", \"sound_classification\": \"inferred\"}",
+            "context_length": "~10-second spectrogram clips (implied by checkpoint id audioset-10-10)",
+            "declared": "capabilities declared from model documentation; cost/latency/quality unmeasured (architecture defaults)",
+            "hf_provider": "auto",
+            "interface": "audio_classification",
+            "modality": "audio -> class labels (AudioSet 527 classes)",
+            "model": "MIT/ast-finetuned-audioset-10-10-0.4593",
+            "params": "86.6M (Audio Spectrogram Transformer finetuned on AudioSet)",
+            "price": "not deployed by any Inference Provider (2026-08-16); audio transport not wired",
+            "provider": "huggingface",
+            "source": "https://huggingface.co/MIT/ast-finetuned-audioset-10-10-0.4593",
+            "task": "audio-classification",
+            "transport": "declared"
+          },
+          "output_schema": {
+            "format": "plain",
+            "type": "text"
+          },
+          "quality_priors": {},
+          "resource_class": "audio",
+          "resource_id": "hf_ast_audioset_finetuned",
+          "risk_class": "low"
+        },
+        {
+          "availability": {
+            "rate_limit_rpm": 60,
+            "status": "up"
+          },
+          "capabilities": [
+            "vision_input",
+            "image_classification",
+            "zero_shot_classification",
+            "image_text_matching",
+            "image_text_retrieval",
+            "visual_feature_extraction"
+          ],
+          "cost_model": {
+            "estimate_usd": 0.0,
+            "unit": "per_1k_tokens"
+          },
+          "input_schema": {
+            "format": "plain",
+            "type": "image"
+          },
+          "latency_model": {
+            "p50_ms": 1000,
+            "p95_ms": 4000
+          },
+          "metadata": {
+            "capability_provenance": "{\"image_classification\": \"inferred\", \"image_text_matching\": \"inferred\", \"image_text_retrieval\": \"documented\", \"vision_input\": \"documented\", \"visual_feature_extraction\": \"documented\", \"zero_shot_classification\": \"documented\"}",
+            "context_length": "224x224 input (patch16; aspect-ratio and resolution adaptibility in training)",
+            "declared": "capabilities declared from model documentation; cost/latency/quality unmeasured (architecture defaults)",
+            "hf_provider": "auto",
+            "interface": "zero_shot_image_classification",
+            "modality": "image + text labels -> classification/similarity scores, image & text embeddings",
+            "model": "google/siglip2-base-patch16-224",
+            "params": "~0.4B total (ViT-B/16 image tower + text tower; 375M weights)",
+            "price": "not deployed by any Inference Provider (2026-08-16); vision transport not wired",
+            "provider": "huggingface",
+            "source": "https://huggingface.co/google/siglip2-base-patch16-224",
+            "task": "zero-shot-image-classification",
+            "transport": "declared"
+          },
+          "output_schema": {
+            "format": "plain",
+            "type": "text"
+          },
+          "quality_priors": {},
+          "resource_class": "image",
+          "resource_id": "hf_siglip2_base_224",
+          "risk_class": "low"
+        },
+        {
+          "availability": {
+            "rate_limit_rpm": 60,
+            "status": "up"
+          },
+          "capabilities": [
+            "vision_input",
+            "object_detection",
+            "object_identification",
+            "object_localization",
+            "multi_object_detection"
+          ],
+          "cost_model": {
+            "estimate_usd": 0.0,
+            "unit": "per_1k_tokens"
+          },
+          "input_schema": {
+            "format": "plain",
+            "type": "image"
+          },
+          "latency_model": {
+            "p50_ms": 1000,
+            "p95_ms": 4000
+          },
+          "metadata": {
+            "capability_provenance": "{\"multi_object_detection\": \"inferred\", \"object_detection\": \"documented\", \"object_identification\": \"inferred\", \"object_localization\": \"inferred\", \"vision_input\": \"documented\"}",
+            "context_length": "640x640 input (detection; 224 classification, 1024 OBB per card)",
+            "declared": "capabilities declared from model documentation; cost/latency/quality unmeasured (architecture defaults)",
+            "hf_provider": "auto",
+            "interface": "object_detection",
+            "modality": "image -> bounding boxes, class labels, confidence scores",
+            "model": "Ultralytics/YOLO11",
+            "params": "2.6M (yolo11n) - 56.9M (yolo11x) detection variants (.pt weight archive, not a transformers pipeline model)",
+            "price": "not deployed by any Inference Provider (2026-08-16); .pt weight archive, not a serverless endpoint",
+            "provider": "huggingface",
+            "source": "https://huggingface.co/Ultralytics/YOLO11",
+            "task": "object-detection",
+            "transport": "declared"
+          },
+          "output_schema": {
+            "format": "json",
+            "type": "structured"
+          },
+          "quality_priors": {},
+          "resource_class": "image",
+          "resource_id": "hf_yolo11",
+          "risk_class": "low"
+        },
+        {
+          "availability": {
+            "rate_limit_rpm": 60,
+            "status": "up"
+          },
+          "capabilities": [
+            "vision_input",
+            "visual_feature_extraction",
+            "image_representation",
+            "visual_embedding",
+            "image_similarity"
+          ],
+          "cost_model": {
+            "estimate_usd": 0.0,
+            "unit": "per_1k_tokens"
+          },
+          "input_schema": {
+            "format": "plain",
+            "type": "image"
+          },
+          "latency_model": {
+            "p50_ms": 1000,
+            "p95_ms": 4000
+          },
+          "metadata": {
+            "capability_provenance": "{\"image_representation\": \"documented\", \"image_similarity\": \"inferred\", \"vision_input\": \"documented\", \"visual_embedding\": \"documented\", \"visual_feature_extraction\": \"documented\"}",
+            "context_length": "224x224 -> 1 class + 4 register + 196 patch tokens = 201 tokens; larger images OK if multiples of patch size 16",
+            "declared": "capabilities declared from model documentation; cost/latency/quality unmeasured (architecture defaults)",
+            "hf_provider": "auto",
+            "interface": "image_feature_extraction",
+            "modality": "image -> class / patch / register embedding vectors",
+            "model": "facebook/dinov3-vitb16-pretrain-lvd1689m",
+            "params": "86M (ViT-B/16; 85.7M weights)",
+            "price": "not deployed by any Inference Provider (2026-08-16); model card gated (manual Meta approval form)",
+            "provider": "huggingface",
+            "source": "https://huggingface.co/facebook/dinov3-vitb16-pretrain-lvd1689m",
+            "task": "image-feature-extraction",
+            "transport": "declared"
+          },
+          "output_schema": {
+            "format": "json",
+            "type": "structured"
+          },
+          "quality_priors": {},
+          "resource_class": "image",
+          "resource_id": "hf_dinov3_vitb16",
+          "risk_class": "low"
+        }
+      ]
+    }
+  },
+  "schema": "aosv0.0.3/resource-registry"
+}

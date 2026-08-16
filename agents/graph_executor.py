@@ -33,11 +33,15 @@ class GraphExecutor:
         self.registry = registry
         self.failure_manager = failure_manager or FailureManager(registry)
 
-    def run(self, graph: Graph, image_path: Optional[str] = None) -> Graph:
+    def run(self, graph: Graph, inputs: Optional[dict[str, str]] = None) -> Graph:
         waves = build_waves(graph)
         by_id = {n.id: n for n in graph.nodes}
 
         vision_outputs: dict[str, str] = {}
+        audio_outputs: dict[str, str] = {}
+
+        # Map capability types to input file paths.
+        inputs = inputs or {}
 
         for wave_idx, wave in enumerate(waves):
             _safe_print(
@@ -47,11 +51,18 @@ class GraphExecutor:
 
             def _run_node(node):
                 if not node.depends_on:
-                    if node.capability == "vision":
-                        if image_path:
-                            node.input = image_path
-                        else:
-                            node.input = graph.job
+                    # Route typed inputs based on DNA flags (not just capability).
+                    node_flags = set(node.dna.flags) if node.dna else set()
+                    _audio_flags = {
+                        "speech.transcription", "speech_recognition",
+                        "automatic_speech_recognition", "transcription",
+                        "audio_input", "audio_understanding",
+                    }
+                    _image_flags = {"vision.understanding", "image_classification", "object_detection"}
+                    if "image" in inputs and (node.capability == "vision" or node_flags & _image_flags):
+                        node.input = inputs["image"]
+                    elif "audio" in inputs and (node.capability in ("speech_transcription", "audio") or node_flags & _audio_flags):
+                        node.input = inputs["audio"]
                     else:
                         node.input = graph.job
                 else:
@@ -74,6 +85,17 @@ class GraphExecutor:
                         f"was identified:\n{vision_ctx}\n\n---\n\n{node.input}"
                     )
 
+                # Inject audio transcription context into downstream nodes.
+                if node.capability not in ("speech_transcription", "audio") and audio_outputs:
+                    audio_ctx = "\n\n".join(
+                        f"[AUDIO TRANSCRIPTION]: {aout}"
+                        for aout in audio_outputs.values()
+                    )
+                    node.input = (
+                        f"IMPORTANT CONTEXT — an audio file was transcribed and the following "
+                        f"was identified:\n{audio_ctx}\n\n---\n\n{node.input}"
+                    )
+
                 agent = SubAgent(
                     name=f"sub-agent-{node.id}",
                     capability=node.capability,
@@ -88,6 +110,15 @@ class GraphExecutor:
                 # contain it.
                 if node.capability == "vision" and node.status != "degraded":
                     vision_outputs[node.id] = node.output
+
+                # Track audio transcription outputs for downstream context.
+                node_flags = set(node.dna.flags) if node.dna else set()
+                _audio_flags = {
+                    "speech.transcription", "speech_recognition",
+                    "automatic_speech_recognition", "transcription",
+                }
+                if (node.capability in ("speech_transcription", "audio") or node_flags & _audio_flags) and node.status != "degraded":
+                    audio_outputs[node.id] = node.output
 
                 _safe_print(
                     f"[graph-executor] node '{node.id}' {node.status} "

@@ -70,9 +70,11 @@ Example: if the job is "analyze Brazil, Portugal, and Spain", produce:
   - optionally 1 comparison node depending on all 3 summarization nodes
 NOT a single node covering all three teams.
 
-If an image_path is provided in the job, include a root "vision" node that \
-describes the image, feeding into downstream nodes. If no image is mentioned, \
-do NOT include a vision node.
+If an image, audio, or other media file is provided in the job, include a root \
+node using the appropriate capability (vision for images, web_search for audio \
+transcriptions if no audio capability is available) that processes the media, \
+feeding into downstream nodes. If no media is mentioned, do NOT include a \
+media-processing node.
 
 The id for each node must be a simple string like "a", "b", "c", etc.
 
@@ -194,10 +196,10 @@ class ManagerAgent:
     def __init__(self):
         self._client = Groq(api_key=GROQ_API_KEY)
 
-    def create_plan(self, user_prompt: str, image_path: Optional[str] = None) -> Graph:
+    def create_plan(self, user_prompt: str, inputs: Optional[dict[str, str]] = None) -> Graph:
         print("[manager-agent] decomposing job into a task graph...")
 
-        graph = self._call_llm(user_prompt, image_path)
+        graph = self._call_llm(user_prompt, inputs)
 
         # --- structural validation loop ---
         structural_attempts = 0
@@ -213,7 +215,7 @@ class ManagerAgent:
                         f"structural retry: {exc}"
                     ) from exc
                 print(f"[manager-agent] structural validation failed, retrying ({structural_attempts}/{self._MAX_STRUCTURAL_RETRIES}): {exc}")
-                graph = self._call_llm_with_retry(user_prompt, image_path, str(exc))
+                graph = self._call_llm_with_retry(user_prompt, inputs, str(exc))
 
         # --- semantic completeness check ---
         completeness_attempts = 0
@@ -230,14 +232,14 @@ class ManagerAgent:
                 )
             print(f"[manager-agent] completeness check: INCOMPLETE ({verdict}) — regenerating")
             graph = self._call_llm_with_completeness_retry(
-                user_prompt, image_path, verdict
+                user_prompt, inputs, verdict
             )
             # re-validate structurally after completeness regeneration
             try:
                 validate_graph(graph)
             except GraphValidationError as exc:
                 print(f"[manager-agent] structural validation failed after completeness retry: {exc}")
-                graph = self._call_llm_with_retry(user_prompt, image_path, str(exc))
+                graph = self._call_llm_with_retry(user_prompt, inputs, str(exc))
                 validate_graph(graph)
 
         self._append_synthesis_node(graph, user_prompt)
@@ -303,8 +305,8 @@ class ManagerAgent:
             f"{[n.id for n in sinks]}"
         )
 
-    def _call_llm(self, user_prompt: str, image_path: Optional[str] = None) -> Graph:
-        messages = self._build_messages(user_prompt, image_path)
+    def _call_llm(self, user_prompt: str, inputs: Optional[dict[str, str]] = None) -> Graph:
+        messages = self._build_messages(user_prompt, inputs)
         response = self._client.chat.completions.create(
             model=_MODEL,
             messages=messages,
@@ -315,9 +317,9 @@ class ManagerAgent:
         return Graph.model_validate(self._extract_fn_call(response))
 
     def _call_llm_with_retry(
-        self, user_prompt: str, image_path: Optional[str], error_msg: str
+        self, user_prompt: str, inputs: Optional[dict[str, str]], error_msg: str
     ) -> Graph:
-        messages = self._build_messages(user_prompt, image_path)
+        messages = self._build_messages(user_prompt, inputs)
         messages.append(
             {
                 "role": "user",
@@ -391,9 +393,9 @@ class ManagerAgent:
         return text
 
     def _call_llm_with_completeness_retry(
-        self, user_prompt: str, image_path: Optional[str], reason: str
+        self, user_prompt: str, inputs: Optional[dict[str, str]], reason: str
     ) -> Graph:
-        messages = self._build_messages(user_prompt, image_path)
+        messages = self._build_messages(user_prompt, inputs)
         messages.append(
             {
                 "role": "user",
@@ -418,19 +420,23 @@ class ManagerAgent:
 
     @staticmethod
     def _build_messages(
-        user_prompt: str, image_path: Optional[str] = None
+        user_prompt: str, inputs: Optional[dict[str, str]] = None
     ) -> list:
         messages: list = [
             {"role": "system", "content": _SYSTEM_PROMPT},
         ]
 
         text = user_prompt
-        if image_path:
+        if inputs:
             from pathlib import Path as _P
 
-            if not _P(image_path).exists():
-                raise FileNotFoundError(f"Image not found: {image_path}")
-            text = f"{user_prompt}\n\n[User has provided an image at: {image_path}]"
+            input_hints = []
+            for input_type, input_path in sorted(inputs.items()):
+                if not _P(input_path).exists():
+                    raise FileNotFoundError(f"{input_type} file not found: {input_path}")
+                label = input_type.capitalize()
+                input_hints.append(f"[User has provided a {label} file at: {input_path}]")
+            text = f"{user_prompt}\n\n" + "\n".join(input_hints)
 
         messages.append({"role": "user", "content": text})
 

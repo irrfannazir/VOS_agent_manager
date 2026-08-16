@@ -26,6 +26,13 @@ CAPABILITY_FLAGS = [
     "speech.synthesis",
     "code.generation",
     "tool.calling",
+    # Non-generative text-model capabilities (added with the model-catalog
+    # expansion). Distinct transports from chat: bi-encoder embedding models
+    # expose text as vectors, cross-encoder rerankers score query/document
+    # pairs. Both are real model capabilities (embedding models and rerankers)
+    # that CapabilityDNA must be able to express for capability-based routing.
+    "embedding.generation",
+    "rerank.scoring",
     "web.search",
     "db.query",
     "sensor.reading",
@@ -37,6 +44,46 @@ CAPABILITY_FLAGS = [
     # scores identically to a summarize node and binds to the summarizer.
     "answer.synthesis",
     "domain.specific",
+    # Multimodal / specialized-model capabilities (audio + vision granularity).
+    # Added for the multimodal-catalog expansion. `audio_input` / `vision_input`
+    # are input-modality flags so "every audio-capable resource" is a first-class
+    # query. Classification, detection and representation are deliberately
+    # DISTINCT flags: a detector must never satisfy a classification request, an
+    # embedder must never satisfy a generation request, and vision-language
+    # reasoning is separate from image classification. None of these assert
+    # anything about Hugging Face availability -- provider/execution state lives
+    # in the ResourceManifest, never in CapabilityDNA.
+    "audio_input",
+    "speech_recognition",
+    "automatic_speech_recognition",
+    "speech_to_text",
+    "transcription",
+    "multilingual_speech",
+    "audio_understanding",
+    "speech_understanding",
+    "audio_analysis",
+    "audio_to_text",
+    "instruction_following",
+    "audio_classification",
+    "sound_classification",
+    "audio_event_recognition",
+    "vision_input",
+    "image_classification",
+    "zero_shot_classification",
+    "image_text_matching",
+    "image_text_retrieval",
+    "visual_feature_extraction",
+    "object_detection",
+    "object_identification",
+    "object_localization",
+    "multi_object_detection",
+    "image_understanding",
+    "visual_question_answering",
+    "visual_reasoning",
+    "vision_language",
+    "image_representation",
+    "visual_embedding",
+    "image_similarity",
 ]
 
 # Ordinal axes, scored 0-4. These describe *how hard* the subtask is along each
