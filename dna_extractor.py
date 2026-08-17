@@ -37,8 +37,8 @@ from models import (
 )
 
 # Cheap model handles the common case; the strong model is the escalation arm.
-_CHEAP_MODEL = "llama-3.1-8b-instant"
-_STRONG_MODEL = "llama-3.3-70b-versatile"
+_CHEAP_MODEL = "openai/gpt-oss-20b"
+_STRONG_MODEL = "openai/gpt-oss-120b"
 
 _FLAGS_LIST = ", ".join(f'"{f}"' for f in CAPABILITY_FLAGS)
 
@@ -62,6 +62,14 @@ be condensed)
    - writing the final answer to the user's whole job -> \
 ["reasoning.deep", "text.summarization"]
    - describing an image -> ["vision.understanding"]
+   - transcribing speech/audio to text -> ["speech.transcription"]
+   - converting a recording to text -> ["speech.transcription"]
+   - identifying what type of sound or audio event -> ["audio_event_recognition"]
+   - classifying audio into categories -> ["audio_classification"]
+   - detecting specific sounds (barking, music, applause) -> ["audio_event_recognition"]
+
+   IMPORTANT: "transcribe" means speech-to-text (speech.transcription), NOT \
+audio_classification. Do NOT use audio_classification for transcription tasks.
 
 2. ordinals -- integers 0-4 scoring how demanding the subtask is:
    - reasoning_depth: 0 = lookup/copy, 4 = multi-step novel inference
@@ -110,9 +118,23 @@ _EXTRACT_TOOL = {
 
 # Keyword -> flag table for the offline fallback. Ordered longest-intent first
 # so "summar" wins over a bare "search" when a description mentions both.
+# Audio keywords are split by intent: transcription vs classification vs event
+# recognition. The ordering matters -- specific intents must come before the
+# broad "audio" catch-all.
 _HEURISTIC_KEYWORDS: list[tuple[tuple[str, ...], str]] = [
     (("image", "photo", "picture", "visual", "diagram"), "vision.understanding"),
-    (("transcri", "audio", "speech-to-text"), "speech.transcription"),
+    # Transcription: explicit speech-to-text intent. Must come BEFORE the broad
+    # "audio" catch-all so "transcribe this audio" maps to speech.transcription,
+    # not audio_classification.
+    (("transcri", "speech-to-text", "into text", "to text"), "speech.transcription"),
+    # Audio event / classification: explicit identification intent.
+    # Must come BEFORE the broad "audio" catch-all.
+    (("what type of sound", "type of audio", "audio event", "sound event"),
+     "audio_event_recognition"),
+    # Broad audio catch-all: only fires when no specific intent matched above.
+    # The word "audio" alone maps to speech.transcription (the most common use).
+    # Classification requires compound match (classify + audio) handled separately.
+    (("audio", "speech", "recording", "sound"), "speech.transcription"),
     (("code", "function", "script", "implement", "refactor"), "code.generation"),
     (("summar", "condense", "digest", "tl;dr"), "text.summarization"),
     (("search", "look up", "research", "find information"), "web.search"),
@@ -122,6 +144,20 @@ _HEURISTIC_KEYWORDS: list[tuple[tuple[str, ...], str]] = [
     (("synthes", "final answer", "combine", "assemble"), "reasoning.deep"),
 ]
 
+# Compound keyword patterns: (group_a, group_b, flag).
+# ANY keyword from group_a AND ANY keyword from group_b must both appear in
+# the text for the flag to match. Checked BEFORE _HEURISTIC_KEYWORDS.
+_COMPOUND_PATTERNS: list[tuple[tuple[str, ...], tuple[str, ...], str]] = [
+    # "classify"/"categorize"/"label" + "audio"/"recording"/"sound" together
+    # -> audio_classification, NOT text.classification.
+    (("classify", "categorize", "label"),
+     ("audio", "recording", "sound", "speech"),
+     "audio_classification"),
+]
+
+# Audio flags that suppress the catch-all when already matched.
+_AUDIO_SPECIFIC_FLAGS = {"audio_classification", "audio_event_recognition"}
+
 # Coarse capability -> flag, used to seed the heuristic when the node's
 # description yields no keyword hit at all.
 _CAPABILITY_TO_FLAG = {
@@ -129,6 +165,8 @@ _CAPABILITY_TO_FLAG = {
     "summarization": "text.summarization",
     "vision": "vision.understanding",
     "synthesis": "reasoning.deep",
+    "speech_transcription": "speech.transcription",
+    "audio": "audio_input",
 }
 
 
@@ -272,6 +310,27 @@ class DNAExtractor:
         if dropped:
             print(f"[dna-extractor] dropped out-of-vocabulary flag(s) {dropped}")
 
+        # Ensure broader input-modality flags are present when specific flags
+        # are detected. This keeps more resources in the candidate pool —
+        # e.g. audio_input includes both whisper and AST, not just one.
+        flag_set = set(flags)
+        _audio_specific = {
+            "audio_classification", "audio_event_recognition", "sound_classification",
+            "audio_understanding", "speech_understanding", "audio_analysis",
+            "audio_to_text", "speech_recognition", "automatic_speech_recognition",
+            "speech_to_text", "transcription", "multilingual_speech",
+        }
+        _vision_specific = {
+            "image_classification", "object_detection", "image_text_matching",
+            "image_text_retrieval", "visual_feature_extraction",
+            "image_representation", "image_similarity", "visual_reasoning",
+            "vision_language", "visual_embedding",
+        }
+        if flag_set & _audio_specific and "audio_input" not in flag_set:
+            flags.append("audio_input")
+        if flag_set & _vision_specific and "vision_input" not in flag_set:
+            flags.append("vision_input")
+
         raw_ordinals = payload.get("ordinals") or {}
         ordinals = DNAOrdinals(
             **{k: v for k, v in raw_ordinals.items() if k in ORDINAL_FIELDS}
@@ -297,8 +356,26 @@ class DNAExtractor:
         text = f"{node.description} {node.capability}".lower()
 
         flags: List[str] = []
+
+        # Check compound patterns first: ALL keywords from group_a AND group_b
+        # must appear. This fires before the simple keyword table so that
+        # "classify this audio" maps to audio_classification, not text.classification.
+        for group_a, group_b, flag in _COMPOUND_PATTERNS:
+            if (any(a in text for a in group_a)
+                    and any(b in text for b in group_b)
+                    and flag not in flags):
+                flags.append(flag)
+
+        # Then check the simple keyword table. Skip the audio catch-all if a
+        # specific audio flag was already matched by a compound pattern.
         for keywords, flag in _HEURISTIC_KEYWORDS:
-            if any(k in text for k in keywords) and flag not in flags:
+            if flag in flags:
+                continue
+            # Suppress the broad audio catch-all when a specific audio flag
+            # (audio_classification, audio_event_recognition) was already added.
+            if flag == "speech.transcription" and (set(flags) & _AUDIO_SPECIFIC_FLAGS):
+                continue
+            if any(k in text for k in keywords):
                 flags.append(flag)
 
         if not flags:

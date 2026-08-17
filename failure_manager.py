@@ -242,6 +242,19 @@ class FailureManager:
         self.outcomes[node.id] = outcome
         started = time.monotonic()
 
+        # If the node was already marked degraded by relaxed routing, skip
+        # the detection loop and return a gap marker immediately. This
+        # preserves the degraded status from capability-preserving fallback.
+        if getattr(node, "routing_mode", None) == "relaxed":
+            outcome.degraded = True
+            outcome.elapsed_ms = int((time.monotonic() - started) * 1000)
+            node.status = "degraded"
+            log(
+                f"[failure-manager] node '{node.id}': already degraded from "
+                f"relaxed routing, returning gap marker"
+            )
+            return self._gap_marker(node, "relaxed_routing", None)
+
         output, error = self._invoke(primary_fn, node.input, node.description)
         detections = self.detect(node, output, error)
         outcome.detections = detections

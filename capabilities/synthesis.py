@@ -19,7 +19,7 @@ from aos_v0.config import GROQ_API_KEY
 
 _client = Groq(api_key=GROQ_API_KEY)
 
-_MODEL = "llama-3.3-70b-versatile"
+_MODEL = "qwen/qwen3.6-27b"
 
 _SYSTEM = """\
 You write the FINAL ANSWER for a user's request, using research gathered by

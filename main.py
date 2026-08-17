@@ -62,7 +62,10 @@ def run(
     print("\n" + failure_manager.report())
 
     print("\n=== FINAL OUTPUT ===")
-    print(final_output)
+    try:
+        print(final_output)
+    except UnicodeEncodeError:
+        print(final_output.encode("ascii", "replace").decode("ascii"))
     return final_output
 
 
@@ -86,15 +89,25 @@ def _check_satisfiable(graph, registry) -> None:
 def _print_routing_summary(graph) -> None:
     print("\n=== ROUTING SUMMARY ===")
     dna_routed = 0
+    relaxed_routed = 0
     for node in graph.nodes:
         flags = ", ".join(node.dna.flags) if node.dna and node.dna.flags else "-"
-        if node.routing_mode == "dna":
+        mode = node.routing_mode or "-"
+        if mode == "dna":
             dna_routed += 1
+        elif mode == "relaxed":
+            relaxed_routed += 1
+        status_tag = node.status.upper() if node.status in ("done", "degraded", "failed") else node.status
         print(
-            f"  {node.id:<8} {node.routing_mode or '-':<6} {node.status:<9} -> "
+            f"  {node.id:<8} {mode:<8} {status_tag:<9} -> "
             f"{node.bound_resource or '-':<22} flags=[{flags}]"
         )
-    print(f"  {dna_routed}/{len(graph.nodes)} nodes bound by Capability DNA")
+    total = len(graph.nodes)
+    print(
+        f"  {dna_routed}/{total} exact DNA, "
+        f"{relaxed_routed}/{total} relaxed (degraded), "
+        f"{total - dna_routed - relaxed_routed}/{total} other"
+    )
 
 
 def _detect_input_type(path: str) -> str:

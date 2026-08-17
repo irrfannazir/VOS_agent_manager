@@ -69,8 +69,8 @@ class SubAgent:
         try:
             decision = self.registry.select(node.dna)
         except InfeasibleDNAError as exc:
-            print(f"[{self.name}] DNA infeasible, degrading to exact match: {exc}")
-            return self._route_exact(node, reason="DNA infeasible")
+            print(f"[{self.name}] DNA infeasible, trying relaxed routing: {exc}")
+            return self._route_relaxed(node)
 
         node.bound_resource = decision.resource_id
         node.routing_mode = "dna"
@@ -91,7 +91,67 @@ class SubAgent:
             for c in decision.candidates
             if c.resource_id != decision.resource_id
         ]
+
+        # When the exact-match candidate pool is empty (the winner is the
+        # only resource satisfying ALL DNA flags), offer partial-match
+        # resources as fallback substitutes.  These overlap on at least one
+        # flag and give the FailureManager something to try on resource.outage
+        # instead of giving up immediately.
+        if not substitutes:
+            node_flags = set(node.dna.flags)
+            substitutes = [
+                m.resource_id
+                for m in self.registry.manifests()
+                if m.resource_id != decision.resource_id
+                and node_flags & set(m.capabilities)
+            ]
+
         return self.registry.run_fn(decision.resource_id), decision.resource_id, substitutes
+
+    def _route_relaxed(self, node: Node) -> Tuple[object, str, List[str]]:
+        """Dynamic fallback: find ANY resource that provides at least one DNA flag.
+
+        Instead of falling back to exact-match on the manager's coarse capability
+        string (which may be completely wrong, e.g. 'web_search' for an audio
+        task), we search the registry for resources that overlap with the DNA
+        flags. This keeps routing capability-driven even when strict feasibility
+        fails.
+
+        Partial matches are marked degraded so the synthesis node can report
+        capability-specific failures rather than treating them as normal success.
+        """
+        node_flags = set(node.dna.flags) if node.dna else set()
+        best_rid = None
+        best_overlap = 0
+        all_manifests = self.registry.manifests()
+
+        for m in all_manifests:
+            m_caps = set(m.capabilities)
+            overlap = len(node_flags & m_caps)
+            if overlap > best_overlap:
+                best_overlap = overlap
+                best_rid = m.resource_id
+
+        if best_rid and best_overlap > 0:
+            fn = self.registry.run_fn(best_rid)
+            node.bound_resource = best_rid
+            node.routing_mode = "relaxed"
+            # Mark degraded so synthesis reports the capability gap.
+            node.status = "degraded"
+            print(
+                f"[{self.name}] RELAXED routing: {best_overlap} flag(s) overlap "
+                f"-> '{best_rid}' (partial match, marked degraded)"
+            )
+            # Offer other overlapping resources as substitutes.
+            substitutes = [
+                m.resource_id for m in all_manifests
+                if m.resource_id != best_rid and node_flags & set(m.capabilities)
+            ]
+            return fn, best_rid, substitutes
+
+        # Last resort: exact-match on the capability string.
+        print(f"[{self.name}] no flag overlap found, falling back to exact match")
+        return self._route_exact(node, reason="no flag overlap")
 
     def _route_exact(self, node: Node, reason: str) -> Tuple[object, str, List[str]]:
         fn = self.registry.find_by_capability(node.capability)

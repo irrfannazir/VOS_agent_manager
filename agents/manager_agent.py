@@ -16,11 +16,11 @@ from aos_v0.models import CapabilityDNA, DNAOrdinals, Graph, Node
 
 # The planner may only choose among these. "synthesis" is deliberately absent:
 # the kernel appends the terminal synthesis node itself.
-_CAPABILITIES = ["web_search", "summarization", "vision"]
+_CAPABILITIES = ["web_search", "summarization", "vision", "speech_transcription", "audio"]
 
 _SYNTHESIS_NODE_ID = "final"
 
-_MODEL = "llama-3.3-70b-versatile"
+_MODEL = "openai/gpt-oss-120b"
 
 _SYSTEM_PROMPT = f"""\
 You are a task planner. Given a user job, decompose it into a directed acyclic \
@@ -70,11 +70,14 @@ Example: if the job is "analyze Brazil, Portugal, and Spain", produce:
   - optionally 1 comparison node depending on all 3 summarization nodes
 NOT a single node covering all three teams.
 
-If an image, audio, or other media file is provided in the job, include a root \
-node using the appropriate capability (vision for images, web_search for audio \
-transcriptions if no audio capability is available) that processes the media, \
-feeding into downstream nodes. If no media is mentioned, do NOT include a \
-media-processing node.
+If an image, audio, or other media file is provided in the job, include root \
+node(s) using the appropriate capability that process the media, feeding into \
+downstream nodes. When the job asks for MULTIPLE independent analyses of the \
+same media (e.g. "transcribe AND identify audio events"), create SEPARATE \
+parallel root nodes — one per distinct analysis task — all depending on [] \
+(all are root nodes). They will receive the original media artifact. Do NOT \
+merge independent analyses into a single node. If no media is mentioned, do \
+NOT include a media-processing node.
 
 The id for each node must be a simple string like "a", "b", "c", etc.
 

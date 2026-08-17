@@ -5,6 +5,7 @@ vector, not a per-resource fit score. Resources describe themselves with a
 CapabilityManifest (DOC1 5.1) which lives in capability_registry.py.
 """
 
+from pathlib import Path
 from typing import List, Literal, Optional
 
 from pydantic import BaseModel, Field, field_validator
@@ -193,6 +194,41 @@ class CapabilityDNA(BaseModel):
 
 
 # ---------------------------------------------------------------------------
+# Artifact lineage
+# ---------------------------------------------------------------------------
+
+class Artifact(BaseModel):
+    """Tracks an input or derived data artifact through the task graph.
+
+    An Artifact is either an original user-supplied file (audio, image) or a
+    node output that downstream nodes may consume. The executor registers
+    originals at startup and registers node outputs as they complete. This
+    lets parallel branches from the same original both receive the correct
+    file, rather than one getting a transcription text.
+    """
+
+    id: str
+    modality: Literal["audio", "image", "text"]
+    path: Optional[str] = None
+    source: str = "user_input"  # "user_input" | "node:<id>"
+
+
+class ArtifactModalityMismatch(RuntimeError):
+    """Raised when a node is given an artifact whose modality doesn't match
+    its input requirement."""
+
+    def __init__(self, node_id: str, artifact_id: str, expected: str, actual: str):
+        self.node_id = node_id
+        self.artifact_id = artifact_id
+        self.expected = expected
+        self.actual = actual
+        super().__init__(
+            f"node '{node_id}': artifact '{artifact_id}' has modality "
+            f"'{actual}', but node requires '{expected}'"
+        )
+
+
+# ---------------------------------------------------------------------------
 # Task DAG (DOC1 5.3)
 # ---------------------------------------------------------------------------
 
@@ -215,8 +251,14 @@ class Node(BaseModel):
     # performed_by, which names the sub-agent rather than the resource.
     bound_resource: Optional[str] = None
     routing_mode: Optional[str] = None  # "dna" | "exact"
+    # Artifact IDs this node should consume. When non-empty, the executor
+    # routes these artifacts as the node's input instead of the outputs of
+    # the nodes listed in depends_on. Empty means "use dependency outputs"
+    # (the original v0.0.3 behaviour).
+    data_inputs: List[str] = Field(default_factory=list)
 
 
 class Graph(BaseModel):
     job: str
     nodes: List[Node]
+    artifacts: dict[str, Artifact] = Field(default_factory=dict)

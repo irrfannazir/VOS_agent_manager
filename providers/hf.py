@@ -449,6 +449,15 @@ def _audio_classification_run(
             model=model,
             audio=audio_path,
         )
+    except StopIteration as exc:
+        raise ProviderUnavailableError(
+            _redact(
+                f"HF audio classification: model '{model}' is not deployed on "
+                f"any Inference Provider (no provider maps to this model for "
+                f"audio-classification task)",
+                provider.token,
+            )
+        ) from exc
     except (InferenceTimeoutError, TimeoutError, requests.exceptions.Timeout) as exc:
         raise ProviderTimeoutError(
             _redact(f"HF audio classification timed out: {exc}", provider.token)

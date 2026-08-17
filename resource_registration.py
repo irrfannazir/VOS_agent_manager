@@ -73,7 +73,7 @@ def build_default_registry() -> CapabilityRegistry:
             risk_class="medium",
             metadata={
                 "provider": "groq",
-                "model": "llama-3.3-70b-versatile",
+                "model": "qwen/qwen3.6-27b",
                 "pipeline": "ddgs_search+groq",
             },
         ),
@@ -104,7 +104,7 @@ def build_default_registry() -> CapabilityRegistry:
             risk_class="low",
             metadata={
                 "provider": "groq",
-                "model": "llama-3.3-70b-versatile",
+                "model": "qwen/qwen3.6-27b",
             },
         ),
         # Local Ollama vision model: free per call, but slow, hence the wide p95.
@@ -164,7 +164,7 @@ def build_default_registry() -> CapabilityRegistry:
             risk_class="low",
             metadata={
                 "provider": "groq",
-                "model": "llama-3.3-70b-versatile",
+                "model": "qwen/qwen3.6-27b",
             },
         ),
         # Cheap extractive pass over the same model with a terser instruction.
@@ -189,7 +189,7 @@ def build_default_registry() -> CapabilityRegistry:
             risk_class="low",
             metadata={
                 "provider": "groq",
-                "model": "llama-3.3-70b-versatile",
+                "model": "qwen/qwen3.6-27b",
             },
         ),
     ]
@@ -235,4 +235,16 @@ def build_hf_enabled_registry(
     from providers.hf import register_hf_resources
 
     register_hf_resources(registry, provider=provider)
+
+    # Print the FULL registry summary after all resources (default + HF) are
+    # registered, so the summary accurately reflects what routing sees.
+    all_manifests = list(registry.manifests())
+    print("\n[resource-registration] full registry after HF resources added")
+    print("=" * 72)
+    _print_manifest_table(all_manifests)
+    print(
+        f"[resource-registration] {len(all_manifests)} resources provide "
+        f"{len(registry.provided_flags())} distinct capability flags\n"
+    )
+
     return registry

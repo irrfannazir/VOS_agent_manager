@@ -6,7 +6,7 @@ from groq import Groq
 from aos_v0.config import GROQ_API_KEY
 
 _client = Groq(api_key=GROQ_API_KEY)
-_MODEL = "llama-3.3-70b-versatile"
+_MODEL = "qwen/qwen3.6-27b"
 
 # Sentinel the Failure Manager's content detector looks for. Emitting a token
 # instead of prose means an empty result is a *classifiable* failure rather

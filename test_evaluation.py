@@ -102,14 +102,14 @@ def test_normalize_plain_string() -> None:
         raw="existing summary",
         resource_id="summarization",
         provider="groq",
-        model="llama-3.3-70b-versatile",
+        model="qwen/qwen3.6-27b",
         task="text.summarization",
         latency_ms=1234,
     )
     check("success", m.success)
     check("text captured", m.text == "existing summary", f"got {m.text!r}")
     check("provider attributed", m.provider == "groq", f"got {m.provider!r}")
-    check("model attributed", m.model == "llama-3.3-70b-versatile", f"got {m.model!r}")
+    check("model attributed", m.model == "qwen/qwen3.6-27b", f"got {m.model!r}")
     check("task attributed", m.task == "text.summarization", f"got {m.task!r}")
     check("latency captured", m.latency_ms == 1234, f"got {m.latency_ms!r}")
     check("tokens not invented", m.total_tokens is None, f"got {m.total_tokens!r}")
@@ -316,7 +316,7 @@ def _register_existing_stub(registry, resource_id, output, error=None):
             resource_id=resource_id,
             resource_class="llm",
             capabilities=["text.summarization"],
-            metadata={"provider": "groq", "model": "llama-3.3-70b-versatile"},
+            metadata={"provider": "groq", "model": "qwen/qwen3.6-27b"},
         ),
         run_fn,
     )
@@ -367,7 +367,7 @@ def test_same_benchmark_code_for_both_providers() -> None:
     )
     check(
         "existing model attributed",
-        existing.model == "llama-3.3-70b-versatile",
+        existing.model == "qwen/qwen3.6-27b",
         f"got {existing.model!r}",
     )
     check(
@@ -455,7 +455,7 @@ def test_benchmark_failure_case() -> None:
     check("failure latency measured", record.latency_ms is not None)
     check(
         "failure attribution intact",
-        record.provider == "groq" and record.model == "llama-3.3-70b-versatile",
+        record.provider == "groq" and record.model == "qwen/qwen3.6-27b",
         f"got provider={record.provider!r} model={record.model!r}",
     )
 
@@ -472,7 +472,7 @@ def test_default_manifests_carry_provider_metadata() -> None:
     )
     check(
         "summarization -> groq model",
-        default.describe("summarization").metadata.get("model") == "llama-3.3-70b-versatile",
+        default.describe("summarization").metadata.get("model") == "qwen/qwen3.6-27b",
         f"got {default.describe('summarization').metadata}",
     )
     check(

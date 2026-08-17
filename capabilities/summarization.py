@@ -6,7 +6,7 @@ from aos_v0.config import GROQ_API_KEY
 
 _client = Groq(api_key=GROQ_API_KEY)
 
-_MODEL = "llama-3.3-70b-versatile"
+_MODEL = "qwen/qwen3.6-27b"
 
 _DEFAULT_SYSTEM = (
     "You are a factual summarizer. Given a body of text, extract and "
