@@ -8,10 +8,12 @@ from aos_v0.models import Node
 class SubAgent:
     """Executes one DAG node. Decision-maker only -- all work goes to a Resource.
 
-    Routing is the M5 two-stage decision when the node carries Capability DNA,
-    and the exact-match lookup otherwise. An infeasible DNA degrades to exact
-    match rather than failing the node: DOC1 puts hard rejection in admission
-    control, before execution, not here mid-wave.
+    Routing uses the continuous DNA scorer: every available resource is graded
+    against the task's DNA and the highest-scoring one wins. The only hard gate
+    is resource availability (status="up"). An infeasible DNA (empty registry
+    or all resources unavailable) degrades to exact match rather than failing
+    the node: DOC1 puts hard rejection in admission control, before execution,
+    not here mid-wave.
 
     The actual invocation is handed to the FailureManager so every call runs
     inside the detect -> classify -> recover loop. The substitution ladder gets
@@ -74,9 +76,14 @@ class SubAgent:
 
         node.bound_resource = decision.resource_id
         node.routing_mode = "dna"
+
+        # Winner's detailed DNAScore (first in all_scores, ranked descending).
+        winner_score = decision.all_scores[0]
         print(
-            f"[{self.name}] DNA routing: flags={node.dna.flags} -> "
+            f"[{self.name}] DNA routing (continuous scorer): flags={node.dna.flags} -> "
             f"'{decision.resource_id}' (score={decision.score:.3f}, "
+            f"accept={winner_score.acceptance_rate:.3f}, "
+            f"reject={winner_score.rejection_rate:.3f}, "
             f"quality={decision.quality:.2f}, cost=${decision.cost_usd:.4f}, "
             f"p95={decision.latency_ms}ms)"
         )
@@ -86,17 +93,16 @@ class SubAgent:
                 f"(margin={decision.runner_up_margin:.3f})"
             )
 
+        # Substitutes = all scored resources except the winner, in score order.
         substitutes = [
-            c.resource_id
-            for c in decision.candidates
-            if c.resource_id != decision.resource_id
+            s.resource_id
+            for s in decision.all_scores
+            if s.resource_id != decision.resource_id
         ]
 
-        # When the exact-match candidate pool is empty (the winner is the
-        # only resource satisfying ALL DNA flags), offer partial-match
-        # resources as fallback substitutes.  These overlap on at least one
-        # flag and give the FailureManager something to try on resource.outage
-        # instead of giving up immediately.
+        # When no other resource was scored (winner is the only available one),
+        # offer partial-flag-overlap resources as fallback substitutes so the
+        # FailureManager has something to try on resource.outage.
         if not substitutes:
             node_flags = set(node.dna.flags)
             substitutes = [
@@ -107,6 +113,7 @@ class SubAgent:
             ]
 
         return self.registry.run_fn(decision.resource_id), decision.resource_id, substitutes
+
 
     def _route_relaxed(self, node: Node) -> Tuple[object, str, List[str]]:
         """Dynamic fallback: find ANY resource that provides at least one DNA flag.
